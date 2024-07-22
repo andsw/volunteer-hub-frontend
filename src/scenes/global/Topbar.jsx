@@ -43,7 +43,7 @@ const Topbar = () => {
         <IconButton>
           <SettingsOutlinedIcon />
         </IconButton>
-        <IconButton>
+        <IconButton onClick={()=>{console.log("clicked the profile button")}}>
           <PersonOutlinedIcon />
         </IconButton>
       </Box>

@@ -2,7 +2,11 @@ import { Box, IconButton, Tooltip } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
+import Topbar from "../global/Topbar";
+import Sidebar from "../global/Sidebar";
 import { useTheme } from "@mui/material";
+import { useAuth } from "../../contexts/authContext";
+import { Navigate } from "react-router-dom";
 import CommentIcon from '@mui/icons-material/Comment';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import GradeIcon from '@mui/icons-material/Grade';
@@ -100,6 +104,7 @@ const Events = () => {
         <PeopleIcon/>
       ), type: "number", flex: 0.1 },
     {
+      
       headerAlign: 'center',
       align: 'center',
       renderHeader: () => (
@@ -110,17 +115,17 @@ const Events = () => {
         return (
           <Box>
             <Tooltip title="Edit">
-              <IconButton onClick={() => handleEdit(params.row.id)} size="small">
+              <IconButton key={`edit-${params.row.id}`} onClick={() => handleEdit(params.row.id)} size="small">
                 <EditIcon />
               </IconButton>
             </Tooltip>
             <Tooltip title="More info">
-              <IconButton onClick={() => handleView(params.row.id)} size="small">
+              <IconButton key={`view-${params.row.id}`} onClick={() => handleView(params.row.id)} size="small">
                 <RemoveRedEyeIcon />
               </IconButton>
             </Tooltip>
             <Tooltip title="Delete">
-              <IconButton onClick={() => handleDelete(params.row.id)} size="small">
+              <IconButton key={`delete-${params.row.id}`} onClick={() => handleDelete(params.row.id)} size="small">
                 <DeleteIcon />
               </IconButton>
             </Tooltip>
@@ -130,51 +135,60 @@ const Events = () => {
     },
   ];
 
+  const account = useAuth();
+  const [isSidebar, setIsSidebar] = useState(true);
   return (
-    <Box m="20px">
-      <Header
-        title="Events"
-        subtitle="List of Events"
-      />
-      <Box
-        m="40px 0 0 0"
-        height="75vh"
-        sx={{
-          "& .MuiDataGrid-root": {
-            border: "none",
-          },
-          "& .MuiDataGrid-cell": {
-            borderBottom: "none",
-          },
-          "& .name-column--cell": {
-            color: colors.greenAccent[300],
-          },
-          "& .MuiDataGrid-columnHeaders": {
-            backgroundColor: colors.blueAccent[700],
-            borderBottom: "none",
-          },
-          "& .MuiDataGrid-virtualScroller": {
-            backgroundColor: colors.primary[400],
-          },
-          "& .MuiDataGrid-footerContainer": {
-            borderTop: "none",
-            backgroundColor: colors.blueAccent[700],
-          },
-          "& .MuiCheckbox-root": {
-            color: `${colors.greenAccent[200]} !important`,
-          },
-          "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
-            color: `${colors.grey[100]} !important`,
-          },
-        }}
-      >
-        <DataGrid
-          rows={events}
-          columns={columns}
-          components={{ Toolbar: GridToolbar }}
-        />
-      </Box>
-    </Box>
+    <div className="app">
+      <Sidebar isSidebar={isSidebar} />
+      <main className="content">
+        <Topbar setIsSidebar={setIsSidebar} />
+        <Box m="20px">
+          {!account.userLoggedIn && (<Navigate to={'/login'} replace={true} />)}
+          <Header
+            title="Events"
+            subtitle="List of Events"
+          />
+          <Box
+            m="40px 0 0 0"
+            height="75vh"
+            sx={{
+              "& .MuiDataGrid-root": {
+                border: "none",
+              },
+              "& .MuiDataGrid-cell": {
+                borderBottom: "none",
+              },
+              "& .name-column--cell": {
+                color: colors.greenAccent[300],
+              },
+              "& .MuiDataGrid-columnHeaders": {
+                backgroundColor: colors.blueAccent[700],
+                borderBottom: "none",
+              },
+              "& .MuiDataGrid-virtualScroller": {
+                backgroundColor: colors.primary[400],
+              },
+              "& .MuiDataGrid-footerContainer": {
+                borderTop: "none",
+                backgroundColor: colors.blueAccent[700],
+              },
+              "& .MuiCheckbox-root": {
+                color: `${colors.greenAccent[200]} !important`,
+              },
+              "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
+                color: `${colors.grey[100]} !important`,
+              },
+            }}
+          >
+            <DataGrid
+              rows={events}
+              columns={columns}
+              components={{ Toolbar: GridToolbar }}
+            />
+          </Box>
+        </Box>
+      </main>
+    </div>
   );
 };
 
