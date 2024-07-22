@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Navigate, Link } from 'react-router-dom'
 import { doSignInWithEmailAndPassword, doSignInWithGoogle } from '../../../firebase/auth'
-import { useAuth } from '../../../contexts/authContext'
+import { useAuth } from '../../../firebase/authContext'
 import './login.css';
 
 const Login = () => {
@@ -14,19 +14,20 @@ const Login = () => {
 
     const onSubmit = async (e) => {
         e.preventDefault()
-        if(!isSigningIn) {
+        if (!isSigningIn) {
             setIsSigningIn(true)
             await doSignInWithEmailAndPassword(email, password)
-            .then((userCredential) => {
-                // Sign-in successful
-                const user = userCredential.user;
-                console.log('Signed in as user:', user);
-              }).catch((error) => {
-                // Handle Errors here
-                console.error('Sign-in error:', error.message);
-                setErrorMessage("Invalid username or password!")
-                setIsSigningIn(false)
-              });
+                .then((userCredential) => {
+                    // Sign-in successful
+                    const user = userCredential.user;
+                    console.log('Signed in as user:', user);
+                    setIsSigningIn(true)
+                }).catch((error) => {
+                    // Handle Errors here
+                    console.error('Sign-in error:', error.message);
+                    setErrorMessage("Invalid username or password!")
+                    setIsSigningIn(false)
+                });
             // doSendEmailVerification()
         }
     }
@@ -34,8 +35,11 @@ const Login = () => {
     const onGoogleSignIn = (e) => {
         e.preventDefault()
         if (!isSigningIn) {
-            setIsSigningIn(true)
-            doSignInWithGoogle().catch(err => {
+            doSignInWithGoogle()
+            .then(userCredential => {
+                setIsSigningIn(true)
+            })
+            .catch(err => {
                 setIsSigningIn(false)
             })
         }

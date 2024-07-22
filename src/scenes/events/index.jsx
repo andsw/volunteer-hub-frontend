@@ -5,8 +5,6 @@ import Header from "../../components/Header";
 import Topbar from "../global/Topbar";
 import Sidebar from "../global/Sidebar";
 import { useTheme } from "@mui/material";
-import { useAuth } from "../../contexts/authContext";
-import { Navigate } from "react-router-dom";
 import CommentIcon from '@mui/icons-material/Comment';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import GradeIcon from '@mui/icons-material/Grade';
@@ -16,7 +14,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SettingsIcon from '@mui/icons-material/Settings';
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import { fetchEvents } from "../../data/api";
 import { format } from "date-fns";
 
 const Events = () => {
@@ -24,18 +22,7 @@ const Events = () => {
   const colors = tokens(theme.palette.mode);
   const [events, setEvents] = useState([]);
 
-  useEffect(() => {
-    fetchEvents();
-  }, []);
-
-  const fetchEvents = async () => {
-    try {
-      const response = await axios.get(`${process.env.REACT_APP_SERVER_HOST}/event/backend`);
-      setEvents(response.data.data);
-    } catch (error) {
-      console.error("Error fetching Events:", error);
-    }
-  };
+  useEffect(() => {setEvents(fetchEvents())}, []);
 
   const handleEdit = (id) => {
     // Empty method for edit action
@@ -135,7 +122,6 @@ const Events = () => {
     },
   ];
 
-  const account = useAuth();
   const [isSidebar, setIsSidebar] = useState(true);
   return (
     <div className="app">
@@ -143,7 +129,6 @@ const Events = () => {
       <main className="content">
         <Topbar setIsSidebar={setIsSidebar} />
         <Box m="20px">
-          {!account.userLoggedIn && (<Navigate to={'/login'} replace={true} />)}
           <Header
             title="Events"
             subtitle="List of Events"

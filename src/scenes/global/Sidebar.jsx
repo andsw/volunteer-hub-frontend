@@ -13,7 +13,10 @@ import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import VolunteerActivismIcon from '@mui/icons-material/VolunteerActivism';
-import { useAuth } from "../../contexts/authContext";
+import { useAuth } from "../../firebase/authContext";
+import { useAccount } from "../../data/AccountProvider";
+import useAuthRedirect from "../../firebase/useAuthRedirect";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
@@ -34,13 +37,21 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
 };
 
 const Sidebar = () => {
+  useAuthRedirect();
+
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("Dashboard");
 
-  const account = useAuth();
-  console.log(account);
+  const currentUser = useAuth();
+  const { accountTypeIsNotEmpty, userIsAdmin, userIsOrganization, userIsVolunteer, account } = useAccount();
+  const navigate = useNavigate()
+  const location = useLocation();
+  const currentPath = location.pathname;
+  if (currentPath != '/profile' && !accountTypeIsNotEmpty) {
+    navigate('/profile')
+  }
   return (
     <Box
       sx={{
@@ -80,7 +91,7 @@ const Sidebar = () => {
                 ml="15px"
               >
                 <Typography variant="h3" color={colors.grey[100]}>
-                  ADMINIS
+                  {!accountTypeIsNotEmpty ? 'Welcome!' : account.accountType}
                 </Typography>
                 <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
                   <MenuOutlinedIcon />
@@ -96,7 +107,7 @@ const Sidebar = () => {
                   alt="profile-user"
                   width="100px"
                   height="100px"
-                  src={account.currentUser.photoURL || `../../assets/user.png`}
+                  src={(currentUser.currentUser && currentUser.currentUser.photoURL) || `../../assets/user.png`}
                   style={{ cursor: "pointer", borderRadius: "50%" }}
                 />
               </Box>
@@ -107,7 +118,7 @@ const Sidebar = () => {
                   fontWeight="bold"
                   sx={{ m: "10px 0 0 0" }}
                 >
-                  {account.currentUser.displayName || "Ed Roh"}
+                  {currentUser.currentUser && currentUser.currentUser.displayName}
                 </Typography>
                 <Typography variant="h5" color={colors.greenAccent[500]}>
                   VP Fancy Admin
@@ -124,43 +135,56 @@ const Sidebar = () => {
               selected={selected}
               setSelected={setSelected}
             />
-
-            <Typography
-              variant="h6"
-              color={colors.grey[300]}
-              sx={{ m: "15px 0 5px 20px" }}
-            >
-              Data
-            </Typography>
-            <Item
-              title="Manage Events"
-              to="/events"
-              icon={<VolunteerActivismIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Manage Team"
-              to="/team"
-              icon={<PeopleOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Contacts Information"
-              to="/contacts"
-              icon={<ContactsOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Invoices Balances"
-              to="/invoices"
-              icon={<ReceiptOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-
+            {
+              accountTypeIsNotEmpty &&
+              <Typography
+                variant="h6"
+                color={colors.grey[300]}
+                sx={{ m: "15px 0 5px 20px" }}
+              >
+                Data
+              </Typography>
+            }
+            {
+              (userIsAdmin || userIsOrganization) &&
+              <Item
+                title="Manage Events"
+                to="/events"
+                icon={<VolunteerActivismIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+            }
+            {
+              (userIsAdmin || userIsOrganization) &&
+              <Item
+                title="Manage Team"
+                to="/team"
+                icon={<PeopleOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+            }
+            {
+              (userIsAdmin || userIsOrganization) &&
+              <Item
+                title="Contacts Information"
+                to="/contacts"
+                icon={<ContactsOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+            }
+            {
+              (userIsAdmin || userIsOrganization) &&
+              <Item
+                title="Invoices Balances"
+                to="/invoices"
+                icon={<ReceiptOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+            }
             <Typography
               variant="h6"
               color={colors.grey[300]}
@@ -169,19 +193,22 @@ const Sidebar = () => {
               Pages
             </Typography>
             <Item
-              title="Profile Form"
-              to="/form"
+              title="Profile"
+              to="/profile"
               icon={<PersonOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
-            <Item
-              title="Calendar"
-              to="/calendar"
-              icon={<CalendarTodayOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
+            {
+              accountTypeIsNotEmpty &&
+              <Item
+                title="Calendar"
+                to="/calendar"
+                icon={<CalendarTodayOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+            }
             <Item
               title="FAQ Page"
               to="/faq"
