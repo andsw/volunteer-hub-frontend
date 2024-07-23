@@ -4,8 +4,8 @@ export const fetchEvents = async () => {
   return fetchData('/event/backend');
 };
 
-export const saveAccount = async(account) => {
-  return postData('/account', account);
+export const saveProfile = async (account) => {
+  return await axios.post(`${process.env.REACT_APP_SERVER_HOST}/account`, account);
 }
 
 export const getAccountByEmail = async (email) => {

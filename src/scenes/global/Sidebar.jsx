@@ -45,11 +45,12 @@ const Sidebar = () => {
   const [selected, setSelected] = useState("Dashboard");
 
   const currentUser = useAuth();
-  const { accountTypeIsNotEmpty, userIsAdmin, userIsOrganization, userIsVolunteer, account } = useAccount();
+  console.log(currentUser);
+  const { accountTypeIsNotEmpty, userIsAdmin, userIsOrganization, account } = useAccount();
   const navigate = useNavigate()
   const location = useLocation();
   const currentPath = location.pathname;
-  if (currentPath != '/profile' && !accountTypeIsNotEmpty) {
+  if (currentPath !== '/profile' && !accountTypeIsNotEmpty) {
     navigate('/profile')
   }
   return (

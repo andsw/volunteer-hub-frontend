@@ -8,11 +8,14 @@ export const AccountProvider = ({ children }) => {
   const [account, setAccount] = useState(null);
   const [loading] = useState(true);
   const [error] = useState(null);
-  const {currentUser} = useAuth();
+  const { currentUser } = useAuth();
 
   useEffect(() => {
     if (currentUser && currentUser.email) {
-      setAccount(getAccountByEmail(currentUser.email));
+      const accountData = getAccountByEmail(currentUser.email);
+      console.log('----------');
+      console.log(accountData);
+      setAccount(accountData);
     }
   }, [currentUser]);
 
@@ -22,13 +25,15 @@ export const AccountProvider = ({ children }) => {
   const userIsVolunteer = account?.accountType === 'volunteer';
 
   return (
-    <AccountContext.Provider value={{ loading, error,
+    <AccountContext.Provider value={{
+      loading, error,
       account,
       setAccount,
       accountTypeIsNotEmpty,
       userIsAdmin,
       userIsOrganization,
-      userIsVolunteer}}>
+      userIsVolunteer
+    }}>
       {children}
     </AccountContext.Provider>
   );
