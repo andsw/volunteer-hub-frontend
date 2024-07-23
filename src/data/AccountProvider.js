@@ -6,33 +6,34 @@ const AccountContext = createContext();
 
 export const AccountProvider = ({ children }) => {
   const [account, setAccount] = useState(null);
-  const [loading] = useState(true);
-  const [error] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const { currentUser } = useAuth();
 
   useEffect(() => {
-    if (currentUser && currentUser.email) {
-      const accountData = getAccountByEmail(currentUser.email);
-      console.log('----------');
-      console.log(accountData);
-      setAccount(accountData);
-    }
+    setLoading(true);
+    const fetchAccountData = async () => {
+      if (currentUser && currentUser.email) {
+        try {
+          console.log(currentUser.email);
+          const accountData = await getAccountByEmail(currentUser.email);
+          setAccount(accountData);
+        } catch (err) {
+          console.error(err);
+          setError(err)
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+    fetchAccountData();
   }, [currentUser]);
-
-  const accountTypeIsNotEmpty = !account?.accountType == null;
-  const userIsAdmin = account?.accountType === 'admin';
-  const userIsOrganization = account?.accountType === 'organization';
-  const userIsVolunteer = account?.accountType === 'volunteer';
 
   return (
     <AccountContext.Provider value={{
       loading, error,
       account,
-      setAccount,
-      accountTypeIsNotEmpty,
-      userIsAdmin,
-      userIsOrganization,
-      userIsVolunteer
+      setAccount
     }}>
       {children}
     </AccountContext.Provider>

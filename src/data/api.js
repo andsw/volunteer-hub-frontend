@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const fetchEvents = async () => {
-  return fetchData('/event/backend');
+  return await fetchData('/event/backend');
 };
 
 export const saveProfile = async (account) => {
@@ -9,15 +9,16 @@ export const saveProfile = async (account) => {
 }
 
 export const getAccountByEmail = async (email) => {
-  return fetchData(`/account?email=${email}`);
+  return await fetchData(`/account?email=${email}`);
 }
 
 export const fetchData = async (url) => {
   try {
     const response = await axios.get(`${process.env.REACT_APP_SERVER_HOST}${url}`);
-    return response.data.data;
+    return response.data.data; // return the entire response body
   } catch (error) {
-    console.error("Error fetching Events:", error);
+    console.error("Error fetching data:", error);
+    throw error; // rethrow error to be handled by the caller if needed
   }
 }
 

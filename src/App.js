@@ -3,7 +3,7 @@ import Team from "./scenes/team";
 import Invoices from "./scenes/invoices";
 import Contacts from "./scenes/contacts";
 import FAQ from "./scenes/faq";
-import Profile from "./scenes/profile";
+import ProfileForm from "./scenes/profileForm";
 import Events from "./scenes/events";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme";
@@ -12,6 +12,7 @@ import Login from "./components/auth/login";
 import Register from "./components/auth/register";
 import { AuthProvider } from "./firebase/authContext";
 import { AccountProvider } from "./data/AccountProvider";
+import Profile from "./scenes/profile";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -30,6 +31,7 @@ function App() {
               <Route path="/contacts" element={<Contacts />} />
               <Route path="/invoices" element={<Invoices />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/profileForm" element={<ProfileForm />} />
               <Route path="/faq" element={<FAQ />} />
               <Route path="/calendar" element={<Calendar />} />
             </Routes>
