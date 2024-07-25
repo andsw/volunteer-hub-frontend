@@ -20,7 +20,6 @@ const Login = () => {
                 .then((userCredential) => {
                     // Sign-in successful
                     const user = userCredential.user;
-                    console.log('Signed in as user:', user);
                     setIsSigningIn(true)
                 }).catch((error) => {
                     // Handle Errors here

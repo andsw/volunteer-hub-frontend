@@ -1,4 +1,4 @@
-import { Box, IconButton, Tooltip } from "@mui/material";
+import { Box, IconButton, Tooltip, Fab } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
@@ -16,136 +16,150 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import React, { useState, useEffect } from "react";
 import { fetchEvents } from "../../data/api";
 import { format } from "date-fns";
+import { useNavigate } from "react-router-dom";
+import { Add } from "@mui/icons-material";
+import { useAccount } from "../../data/AccountProvider";
 
 const Events = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const { account, loadingAccount } = useAccount();
+  const navigate = useNavigate();
 
-  useEffect(() => {setEvents(fetchEvents())}, []);
+  useEffect(() => {
+    const getEvents = async () => {
+      try {
+        const data = await fetchEvents(account.organizationId);
+        setEvents(data);
+      } catch (error) {
+        console.error('Error fetching events:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    if (!loadingAccount) {
+      getEvents();
+    }
+  }, [loadingAccount]);
 
   const handleEdit = (id) => {
-    // Empty method for edit action
-    console.log('Edit clicked for id:', id);
+    navigate(`/event-form/${id}`);
   };
-  
+
   const handleView = (id) => {
-    // Empty method for view action
-    console.log('View clicked for id:', id);
+    navigate(`/event-detail/${id}`);
   };
-  
+
   const handleDelete = (id) => {
-    // Empty method for delete action
     console.log('Delete clicked for id:', id);
   };
 
+  const handleAddEvent = () => {
+    navigate('/event-form');
+  };
+
   const columns = [
-    { field: "id", headerName: "ID", flex: 0.1, headerAlign: 'center', align: 'center',},
+    { field: "id", headerName: "ID", flex: 0.1, headerAlign: 'center', align: 'center' },
     { field: "title", headerName: "Title", flex: 0.3 },
     { field: "subtitle", headerName: "Subtitle", flex: 0.5 },
-    // { field: "requiredSkillTags", headerName: "Required Skills", flex: 1 },
-    { field: "organizationName", headerName: "Organization", flex: 0.4, 
-      valueGetter: (params) => {
-        return `${params.row.organizationName}`
-      }
+    {
+      field: "organizationName",
+      headerName: "Organization",
+      flex: 0.4,
+      valueGetter: (params) => params.row.organizationName || 'N/A'
     },
     { field: "venue", headerName: "Venue", flex: 0.75 },
-    { field: "eventStartTime", headerName: "Start Time", flex: 0.2,
-      headerAlign: 'center',
-      align: 'center',
-      valueGetter: (params) => {
-        // Convert the ISO string to a more readable format
-        const date = new Date(params.row.eventStartTime);
-        return format(date, "yyyy/MM/dd");
-      }
-     },
-    // { field: "eventEndTime", headerName: "End Time", flex: 0.55,
-    //   valueGetter: (params) => {
-    //     // Convert the ISO string to a more readable format
-    //     const date = new Date(params.row.eventStartTime);
-    //     return format(date, "yyyy/MM/dd");
-    //   }
-    // },
-    { field: "likesNum", 
-      align: 'center',
-      headerAlign: 'center',
-      renderHeader: () => (
-        <FavoriteIcon/>
-      ), type: "number", flex: 0.1 },
-    { field: "collectionsNum", 
-      align: 'center',
-      headerAlign: 'center',
-      renderHeader: () => (
-        <GradeIcon/>
-      ), type: "number", flex: 0.1 },
-    { field: "reviewsNum", 
-      align: 'center',
-      headerAlign: 'center',
-      renderHeader: () => (
-        <CommentIcon/>
-      ), type: "number", flex: 0.1 },
-    { field: "joinedVolunteerNum", 
-      headerAlign: 'center',
-      align: 'center',
-      renderHeader: () => (
-        <PeopleIcon/>
-      ), type: "number", flex: 0.1 },
     {
-      
+      field: "eventStartTime",
+      headerName: "Start Time",
+      flex: 0.2,
       headerAlign: 'center',
       align: 'center',
-      renderHeader: () => (
-        <SettingsIcon/>
-      ),
+      valueGetter: (params) => format(new Date(params.row.eventStartTime), "yyyy/MM/dd")
+    },
+    {
+      field: "likesNum",
+      headerName: "",
+      renderHeader: () => <FavoriteIcon />,
+      type: "number",
+      flex: 0.1,
+      headerAlign: 'center',
+      align: 'center'
+    },
+    {
+      field: "collectionsNum",
+      headerName: "",
+      renderHeader: () => <GradeIcon />,
+      type: "number",
+      flex: 0.1,
+      headerAlign: 'center',
+      align: 'center'
+    },
+    {
+      field: "reviewsNum",
+      headerName: "",
+      renderHeader: () => <CommentIcon />,
+      type: "number",
+      flex: 0.1,
+      headerAlign: 'center',
+      align: 'center'
+    },
+    {
+      field: "joinedVolunteerNum",
+      headerName: "",
+      renderHeader: () => <PeopleIcon />,
+      type: "number",
+      flex: 0.1,
+      headerAlign: 'center',
+      align: 'center'
+    },
+    {
+      field: "actions",
+      headerName: "",
+      renderHeader: () => <SettingsIcon />,
       flex: 0.2,
-      renderCell: (params) => {
-        return (
-          <Box>
-            <Tooltip title="Edit">
-              <IconButton key={`edit-${params.row.id}`} onClick={() => handleEdit(params.row.id)} size="small">
-                <EditIcon />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="More info">
-              <IconButton key={`view-${params.row.id}`} onClick={() => handleView(params.row.id)} size="small">
-                <RemoveRedEyeIcon />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Delete">
-              <IconButton key={`delete-${params.row.id}`} onClick={() => handleDelete(params.row.id)} size="small">
-                <DeleteIcon />
-              </IconButton>
-            </Tooltip>
-          </Box>
-        )
-      },
+      headerAlign: 'center',
+      align: 'center',
+      renderCell: (params) => (
+        <Box>
+          <Tooltip title="Edit">
+            <IconButton onClick={() => handleEdit(params.row.id)} size="small">
+              <EditIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="More info">
+            <IconButton onClick={() => handleView(params.row.id)} size="small">
+              <RemoveRedEyeIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Delete">
+            <IconButton onClick={() => handleDelete(params.row.id)} size="small">
+              <DeleteIcon />
+            </IconButton>
+          </Tooltip>
+        </Box>
+      ),
     },
   ];
 
   const [isSidebar, setIsSidebar] = useState(true);
+
   return (
     <div className="app">
       <Sidebar isSidebar={isSidebar} />
       <main className="content">
         <Topbar setIsSidebar={setIsSidebar} />
         <Box m="20px">
-          <Header
-            title="Events"
-            subtitle="List of Events"
-          />
+          <Header title="Events" subtitle="List of Events" />
           <Box
             m="40px 0 0 0"
             height="75vh"
             sx={{
-              "& .MuiDataGrid-root": {
-                border: "none",
-              },
-              "& .MuiDataGrid-cell": {
-                borderBottom: "none",
-              },
-              "& .name-column--cell": {
-                color: colors.greenAccent[300],
-              },
+              "& .MuiDataGrid-root": { border: "none" },
+              "& .MuiDataGrid-cell": { borderBottom: "none" },
+              "& .name-column--cell": { color: colors.greenAccent[300] },
               "& .MuiDataGrid-columnHeaders": {
                 backgroundColor: colors.blueAccent[700],
                 borderBottom: "none",
@@ -169,8 +183,26 @@ const Events = () => {
               rows={events}
               columns={columns}
               components={{ Toolbar: GridToolbar }}
+              loading={loading}
             />
           </Box>
+          <Fab
+            color="primary"
+            aria-label="add"
+            sx={{
+              position: 'fixed',
+              bottom: 16,
+              right: 16,
+              backgroundColor: colors.blueAccent[700],
+              color: colors.grey[100],
+              '&:hover': {
+                backgroundColor: colors.blueAccent[400],
+              }
+            }}
+            onClick={handleAddEvent}
+          >
+            <Add />
+          </Fab>
         </Box>
       </main>
     </div>

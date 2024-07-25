@@ -45,21 +45,15 @@ const Sidebar = () => {
   const [selected, setSelected] = useState("Dashboard");
 
   const currentUser = useAuth();
-  const { account, loading } = useAccount();
+  const { account, loadingAccount } = useAccount();
   const accountTypeIsNotEmpty = account?.accountType != null;
   const userIsAdmin = account?.accountType === 'admin';
   const userIsOrganization = account?.accountType === 'organization';
   const userIsVolunteer = account?.accountType === 'volunteer';
-  console.log(`-=-=-=-=-=-=`);
-  console.log(account)
-  console.log(userIsAdmin)
-  console.log(userIsOrganization)
-  console.log(accountTypeIsNotEmpty)
-  console.log(userIsVolunteer)
   const navigate = useNavigate()
   const location = useLocation();
   const currentPath = location.pathname;
-  if (loading) {
+  if (loadingAccount) {
     return <Box
     sx={{
       "& .pro-sidebar-inner": {
@@ -146,9 +140,9 @@ const Sidebar = () => {
     </ProSidebar>
   </Box>
   }
-  // alert('=======' + (!loading && currentPath !== '/profileForm' && !accountTypeIsNotEmpty))
-  if (!loading && currentPath !== '/profileForm' && !accountTypeIsNotEmpty) {
-    navigate('/profileForm')
+  // alert('=======' + (!loading && currentPath !== '/profile-form' && !accountTypeIsNotEmpty))
+  if (!loadingAccount && currentPath !== '/profile-form' && !accountTypeIsNotEmpty) {
+    navigate('/profile-form')
   }
   return (
     <Box

@@ -41,7 +41,6 @@ const Profile = () => {
   const { account } = useAccount()
   const profile = account;
   const [isSidebar, setIsSidebar] = useState(true);
-  console.log(profile);
   const navigate = useNavigate()
 
   if (!profile) {
@@ -140,7 +139,7 @@ const Profile = () => {
   return (
     <div className="app">
       <Sidebar isSidebar={isSidebar} />
-      <main className="content">
+      <main className="content" style={{ flex: 1, overflow: 'auto' }}>
         <Topbar setIsSidebar={setIsSidebar} />
         <Box m="20px">
           <Header
@@ -154,12 +153,13 @@ const Profile = () => {
             <ProfilePaper elevation={3}>
               <Grid container spacing={3} alignItems="center" direction="column">
                 <Grid item>
-                  <LargeAvatar src={profile.avatarImgUrl} alt={isVolunteer ? `${profile.firstName} ${profile.lastName}` : profile.name}>
+                  <LargeAvatar src={profile.avatarImgUrl} alt={isVolunteer ? `${profile.firstName} ${profile.lastName}` : profile.name}
+                  sx={{backgroundColor: colors.greenAccent[400]}}>
                     {isVolunteer ? `${profile.firstName[0]}${profile.lastName[0]}` : profile.name[0]}
                   </LargeAvatar>
                 </Grid>
                 <Grid item>
-                  <Typography variant="h4" gutterBottom>
+                  <Typography variant="h4" gutterBottom sx={{color: colors.greenAccent[400]}}>
                     {isVolunteer ? `${profile.firstName} ${profile.lastName}` : profile.name}
                   </Typography>
                 </Grid>
@@ -175,7 +175,7 @@ const Profile = () => {
                 {isVolunteer ? renderVolunteerInfo() : renderOrganizationInfo()}
               </List>
               <Button color="secondary" variant="contained" style={{ marginTop: 20 }}
-                      onClick={() => navigate('/profileForm')}>
+                      onClick={() => navigate('/profile-form', { state: { profile } })}>
                 Edit Profile
               </Button>
             </ProfilePaper>

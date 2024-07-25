@@ -27,7 +27,7 @@ const Topbar = () => {
   };
 
   const handleProfile = () => {
-    console.log("Profile clicked");
+    navigate('/profile');
     handleClose();
   };
 

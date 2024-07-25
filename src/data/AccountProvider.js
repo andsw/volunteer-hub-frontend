@@ -6,23 +6,23 @@ const AccountContext = createContext();
 
 export const AccountProvider = ({ children }) => {
   const [account, setAccount] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loadingAccount, setLoadingAccount] = useState(true);
   const [error, setError] = useState(null);
   const { currentUser } = useAuth();
 
   useEffect(() => {
-    setLoading(true);
+    setLoadingAccount(true);
     const fetchAccountData = async () => {
       if (currentUser && currentUser.email) {
         try {
-          console.log(currentUser.email);
           const accountData = await getAccountByEmail(currentUser.email);
+          console.log(accountData);
           setAccount(accountData);
         } catch (err) {
           console.error(err);
           setError(err)
         } finally {
-          setLoading(false);
+          setLoadingAccount(false);
         }
       }
     };
@@ -31,7 +31,7 @@ export const AccountProvider = ({ children }) => {
 
   return (
     <AccountContext.Provider value={{
-      loading, error,
+      loadingAccount, error,
       account,
       setAccount
     }}>

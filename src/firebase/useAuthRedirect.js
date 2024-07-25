@@ -8,7 +8,6 @@ const useAuthRedirect = () => {
   const account = useAuth();
   useEffect(() => {
     if (!account || !account.userLoggedIn) {
-      console.log('Redirecting to login');
       navigate('/login');
     }
   }, [account, navigate]);

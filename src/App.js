@@ -5,6 +5,7 @@ import Contacts from "./scenes/contacts";
 import FAQ from "./scenes/faq";
 import ProfileForm from "./scenes/profileForm";
 import Events from "./scenes/events";
+import EventDetail from "./scenes/eventDetail";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme";
 import Calendar from "./scenes/calendar/calendar";
@@ -13,6 +14,7 @@ import Register from "./components/auth/register";
 import { AuthProvider } from "./firebase/authContext";
 import { AccountProvider } from "./data/AccountProvider";
 import Profile from "./scenes/profile";
+import EventForm from "./scenes/eventForm";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -25,13 +27,15 @@ function App() {
             <Routes>
               <Route path="/" element={<Login />} />
               <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
+              <Route path="/reister" element={<Register />} />
               <Route path="/events" element={<Events />} />
+              <Route path="/event-detail/:id" element={<EventDetail />} />
+              <Route path="/event-form" element={<EventForm />} />
               <Route path="/team" element={<Team />} />
               <Route path="/contacts" element={<Contacts />} />
               <Route path="/invoices" element={<Invoices />} />
               <Route path="/profile" element={<Profile />} />
-              <Route path="/profileForm" element={<ProfileForm />} />
+              <Route path="/profile-form" element={<ProfileForm />} />
               <Route path="/faq" element={<FAQ />} />
               <Route path="/calendar" element={<Calendar />} />
             </Routes>
