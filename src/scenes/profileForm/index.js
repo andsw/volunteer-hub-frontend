@@ -51,7 +51,7 @@ const ProfileForm = () => {
     resumeLink: profile?.resumeLink || "",
     name: profile?.name || "",
     logoUrl: profile?.logoUrl || "",
-    official_site_link: profile?.official_site_link || "",
+    officialSiteLink: profile?.officialSiteLink || "",
   });
 
   const handleFormSubmit = (values, { setSubmitting }) => {
@@ -104,9 +104,13 @@ const ProfileForm = () => {
             title="Profile"
             subtitle="Detailed Account Information"
           />
-          <Typography color={colors.greenAccent[400]} sx={{ mb: 2, fontSize: 25, fontWeight: 'bolder' }}>
-            To proceed, please fill out the form below.
-          </Typography>
+          {
+            !profile &&
+            <Typography color={colors.greenAccent[400]} sx={{ mb: 2, fontSize: 25, fontWeight: 'bolder' }}>
+              To proceed, please fill out the form below.
+            </Typography>
+          }
+
           <Formik
             onSubmit={handleFormSubmit}
             initialValues={initialValues}
@@ -140,7 +144,7 @@ const ProfileForm = () => {
                       id="accountType"
                       name="accountType"
                       value={values.accountType}
-                      disabled={profile?.accountType}
+                      disabled={profile?.accountType !== ''}
                       onChange={(event) => handleAccountTypeChange(event, setFieldValue)}
                       onBlur={handleBlur}
                       error={!!touched.accountType && !!errors.accountType}
@@ -319,7 +323,20 @@ const ProfileForm = () => {
 
                   {values.accountType === 'organization' && (
                     <>
-                      <LogoUploader/>
+                      <LogoUploader />
+                      <TextField
+                        fullWidth
+                        variant="filled"
+                        type="text"
+                        label="Name"
+                        onBlur={handleBlur}
+                        onChange={handleChange}
+                        value={values.name}
+                        name="address"
+                        error={!!touched.name && !!errors.name}
+                        helperText={touched.name && errors.name}
+                        sx={{ gridColumn: "span 2" }}
+                      />
                       <TextField
                         fullWidth
                         variant="filled"
@@ -385,6 +402,19 @@ const ProfileForm = () => {
                         helperText={touched.postcode && errors.postcode}
                         sx={{ gridColumn: "span 2" }}
                       />
+                      <TextField
+                        fullWidth
+                        variant="filled"
+                        type="text"
+                        label="Official website"
+                        onBlur={handleBlur}
+                        onChange={handleChange}
+                        value={values.officialSiteLink}
+                        name="official_site_link"
+                        error={!!touched.officialSiteLink && !!errors.officialSiteLink}
+                        helperText={touched.officialSiteLink && errors.officialSiteLink}
+                        sx={{ gridColumn: "span 2" }}
+                      />
                     </>
                   )}
 
@@ -393,7 +423,7 @@ const ProfileForm = () => {
                     variant="filled"
                     type="email"
                     label="Email"
-                    disabled={values.email!==''}
+                    disabled={values.email !== ''}
                     onBlur={handleBlur}
                     onChange={handleChange}
                     value={values.email}
