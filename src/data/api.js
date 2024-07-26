@@ -25,7 +25,10 @@ export const saveProfile = async (account) => {
 }
 
 export const saveEvent = async (event) => {
-  return await axios.post(`${process.env.REACT_APP_SERVER_HOST}/event`, event);
+  return await axios.post(`${process.env.REACT_APP_SERVER_HOST}/event`, event, {
+    headers: {
+      'Content-Type': 'application/json'
+    }});
 }
 
 export const getAccountByEmail = async (email) => {
@@ -42,6 +45,15 @@ export const fetchData = async (url) => {
     return response.data.data; // return the entire response body
   } catch (error) {
     console.error("Error fetching data:", error);
+    throw error; // rethrow error to be handled by the caller if needed
+  }
+}
+
+export const deleteObject = async (objectName, objectId) => {
+  try {
+    const response = await axios.delete(`${process.env.REACT_APP_SERVER_HOST}/${objectName}/${objectId}`);
+  } catch (error) {
+    console.error(`Error deleteing object: ${objectName}, error: ${error}`);
     throw error; // rethrow error to be handled by the caller if needed
   }
 }

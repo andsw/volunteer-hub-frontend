@@ -1,0 +1,577 @@
+body,
+html {
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    font-family: fangsong;
+
+}
+container{
+    max-width: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.columnBorder {
+    border: 1px solid wheat;
+    width: 80%;
+    padding: 10px;
+    height: 330px;
+    margin-bottom: 10px;
+
+}
+
+.testimonal {
+    width: 100%;
+    font-size: 20px;
+}
+
+.header {
+
+    display: flex;
+    top: 0;
+    left: 0;
+    align-items: center;
+    margin-left: 0px;
+
+}
+
+.header h1 {
+    display: flex;
+    margin-left: 40%;
+    text-align: center;
+    font-size: 50px;
+    font-style: italic;
+    background: linear-gradient(to left,
+            black,
+            wheat,
+            black,
+            wheat,
+            black,
+            wheat,
+            black);
+    color: transparent;
+}
+
+#nav {
+
+    background-color: black;
+    text-align: center;
+    height: 30px;
+    width: 100%;
+    margin: auto;
+    padding: 20px 0;
+    color: wheat;
+
+}
+
+#nav a {
+    color: wheat;
+    font-size: 20px;
+    font-weight: 600;
+    padding: 0px 40px;
+    text-decoration: none;
+}
+
+.nav-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 0;
+}
+
+.logo img {
+    height: 50px;
+}
+
+.nav-links {
+    display: flex;
+    gap: 20px;
+} */
+
+.nav-links a {
+    color: white;
+    font-size: 20px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+
+.bagroundImage {
+    width: 100%;
+    height: 100vh;
+    position: relative;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('../img/homepage.jpeg') center/cover no-repeat;
+}
+
+
+
+
+.bagroundImage p {
+    margin: 0;
+}
+
+.bagroundImage h1 {
+    text-align: center;
+    color: whitesmoke;
+    padding-top: 300px;
+    margin-top: 0;
+    text-transform: uppercase;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 50px;
+    font-weight: lighter;
+
+}
+
+.bagroundImage h2 {
+    text-align: center;
+    color: whitesmoke;
+    padding-top: 30px;
+    margin-top: 0;
+    text-transform: uppercase;
+    font-family: 'Times New Roman', Times, serif;
+    font-style: italic;
+    font-size: 40px;
+    font-weight: lighter;
+
+}
+
+.message {
+    text-align: center;
+    padding-top: 20px;
+    padding-bottom: 10px;
+    font-size: 20px;
+    font-style: italic;
+    font-weight: lighter;
+}
+
+.row {
+    width: 100%;
+    overflow: auto;
+
+}
+
+.leftColumn {
+    float: left;
+    width: 60%;
+}
+
+.rightColumn {
+    float: right;
+    width: 40%;
+
+}
+
+.column1 {
+    float: left;
+    width: 60%;
+}
+
+.column2 {
+    float: right;
+    width: 40%;
+}
+
+.testimonal1,
+.testimonal2 {
+    float: left;
+    padding-bottom: 10px;
+    height: 150px;
+    position: relative;
+    width: 100%;
+    margin-bottom: 20px;
+    display: flex;
+    top: 0;
+    align-items: center;
+    margin-left: 0px;
+
+
+}
+
+.testimonal1 h3,
+.testimonal2 h3 {
+    padding-left: 20px;
+}
+
+.products li {
+    margin-bottom: 10px;
+    list-style-type: none;
+}
+
+
+.p1 {
+    width: 100%;
+    margin-top: 30px;
+    padding-top: 30px;
+
+}
+
+.p2 {
+    width: 100%;
+    padding-bottom: 30px;
+
+}
+
+.columnTittle {
+    font-style: italic;
+    color: black;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+aside h3 {
+    /* font-family:cursive; */
+    color: black;
+    font-size: 30px;
+    /* font-weight: bold; */
+    font-style: italic;
+    font-weight: bolder;
+}
+
+main h1 {
+    font-style: italic;
+    color: black;
+    font-size: 30px;
+    font-weight: bold;
+    padding-top: 20px;
+}
+
+
+/* main {
+    margin-top: 20px;
+} */
+
+
+.blockquote {
+    font-size: 20px;
+    font-family: 'Times New Roman', Times, serif;
+    background-color: rgb(237, 234, 232);
+    height: 100%;
+    padding-bottom: 20px;
+    width: 100%;
+    margin-left: 20px;
+}
+
+#activities {
+    margin-bottom: 2rem;
+}
+
+/*About page*/
+.main-about {
+    padding: 20px;
+    background: #f4f4f4;
+    margin-top: 20px;
+}
+
+.about-section,
+.mission {
+    background: #fff;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+}
+
+.about-section h2,
+.mission h2 {
+    margin-top: 0;
+}
+
+.about-section p,
+.mission p {
+    line-height: 1.6;
+}
+
+.about-section img,
+.mission img {
+    width: 40%;
+    border-radius: 10px;
+    margin-right: 20px;
+}
+
+.mission img {
+    order: 2;
+    /* Move the image to the right side for the mission section */
+    margin-right: 0;
+    margin-left: 20px;
+}
+
+.team {
+    margin-top: 40px;
+}
+
+.team h2 {
+    text-align: center;
+}
+
+.team-members {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.team-member {
+    background: #fff;
+    padding: 20px;
+    margin: 10px;
+    width: 30%;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    border-radius: 10px;
+}
+
+.team-member img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+
+.team-member h3 {
+    margin-top: 0;
+}
+
+/*Contact page*/
+.additional-support {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.top_bar {
+    background: #333;
+    color: #fff;
+    padding: 10px 0;
+    text-align: center;
+    margin-top: 20px;
+}
+.main-content-wrapper {
+    max-width: 1200px;
+    width: 100%;
+    padding: 0px 10%;
+}
+
+.main-contact {
+    width: 100%; 
+    box-sizing: border-box;
+    padding: 20px;
+    background: #f4f4f4;
+    margin-top: 20px;
+}
+
+.contact-form {
+    background: #fff;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.contact-form input,
+.contact-form textarea,
+.contact-form select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.contact-form button {
+    padding: 10px 20px;
+    background: #333333;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.contact-form button:hover {
+    background: #0056b3;
+}
+
+.support-info,
+.location {
+    margin-bottom: 20px;
+}
+
+.location iframe {
+    width: 100%;
+    height: 300px;
+    border: 0;
+}
+
+.faq,
+.community-forums,
+.live-chat {
+    margin-bottom: 20px;
+    padding: 20px;
+    background: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.faq button,
+.community-forums button,
+.live-chat button {
+    padding: 10px 20px;
+    background: #333333;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.faq button:hover,
+.community-forums button:hover,
+.live-chat button:hover {
+    background: #218838;
+}
+
+.social-media a {
+    margin: 0 10px;
+    text-decoration: none;
+    color: #333;
+}
+
+.social-media img {
+    width: 40px;
+    height: 40px;
+    transition: transform 0.3s ease;
+}
+
+.social-media img:hover {
+    transform: scale(1.1);
+}
+
+/* Chat Icon */
+.chat-support {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #333333;
+    color: #fff;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.chat-support:hover {
+    background: #0056b3;
+}
+
+.chat-support img {
+    width: 30px;
+    height: 30px;
+}
+
+/*footer*/
+footer {
+    background: #333;
+    color: #fff;
+    padding: 20px 0;
+    margin-top: 20px;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    /* Add some padding to the sides */
+}
+
+.quick-links {
+    display: flex;
+    flex-wrap: wrap;
+    /* Allow items to wrap if necessary */
+    flex: 60%;
+    /* 70% of the space */
+}
+
+.quick-links a {
+    color: #fff;
+    text-decoration: none;
+    margin-right: 20px;
+}
+
+.newsletter {
+    flex: 30%;
+    text-align: center;
+}
+
+.newsletter h2 {
+    margin: 0 0 10px;
+    /* Add some margin to the bottom of the heading */
+}
+
+.newsletter input[type="email"] {
+    padding: 10px;
+    margin-right: 10px;
+    border: none;
+    border-radius: 5px;
+}
+
+.newsletter button {
+    padding: 10px 20px;
+    background: white;
+    color: #333333;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.newsletter button:hover {
+    background: #333333;
+    color: white;
+}
+
+.footer-bottom {
+    text-align: center;
+    background: #fff;
+    color: #333;
+    padding: 10px 0;
+    margin-top: 20px;
+    width: 100%;
+}
+
+
+
+/* Chat Icon */
+.chat-support {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #007bff;
+    color: #fff;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.chat-support:hover {
+    background: #0056b3;
+}
+
+.chat-support img {
+    width: 30px;
+    height: 30px;
+}

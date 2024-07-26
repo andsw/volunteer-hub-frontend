@@ -17,6 +17,7 @@ import Profile from "./scenes/profile";
 import EventForm from "./scenes/eventForm";
 import PositionForm from "./scenes/positionForm";
 import PositionDetail from "./scenes/positionDetail";
+import Home from "./scenes/home";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -29,7 +30,8 @@ function App() {
             <Routes>
               <Route path="/" element={<Login />} />
               <Route path="/login" element={<Login />} />
-              <Route path="/reister" element={<Register />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/home" element={<Home />} />
               <Route path="/events/:id?" element={<Events />} />
               <Route path="/event-detail/:id" element={<EventDetail />} />
               <Route path="/event-form" element={<EventForm />} />

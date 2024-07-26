@@ -14,8 +14,8 @@ const EventForm = () => {
   const colors = tokens(theme.palette.mode);
   const navigate = useNavigate();
   const location = useLocation();
-  const {loadingAccount, account} = useAccount();
-  
+  const { loadingAccount, account } = useAccount();
+
   const { event } = location.state || {};
 
   const [formData, setFormData] = useState({
@@ -58,7 +58,6 @@ const EventForm = () => {
       ...formData,
       organizationId: account.organizationId
     })
-    // Redirect to events list or another page
     navigate('/events');
   };
 
@@ -72,7 +71,7 @@ const EventForm = () => {
       <main className="content">
         <Topbar />
         <Box m="20px">
-          <Header title={event?"Edit Event":"Add Event"} subtitle={formData.title} />
+          <Header title={event ? "Edit Event" : "Add Event"} subtitle={formData.title} />
           <Paper
             elevation={3}
             sx={{
@@ -93,13 +92,13 @@ const EventForm = () => {
                     onChange={handleChange}
                     sx={{ mb: 2 }}
                     InputLabelProps={{
-                        sx: {
-                          color: colors.greenAccent[300], // Set the label color
-                          '&.Mui-focused': {
-                            color: colors.greenAccent[300], // Change color when focused
-                          },
+                      sx: {
+                        color: colors.greenAccent[300], // Set the label color
+                        '&.Mui-focused': {
+                          color: colors.greenAccent[300], // Change color when focused
                         },
-                      }}
+                      },
+                    }}
                   />
                   <TextField
                     fullWidth
@@ -133,14 +132,15 @@ const EventForm = () => {
                       },
                     }}
                   />
+                  <Typography variant="body1" color={colors.greenAccent[300]}>
+                    Start Time
+                  </Typography>
                   <TextField
-                    fullWidth
                     type="datetime-local"
-                    label="Start Time"
                     name="eventStartTime"
                     value={formData.eventStartTime}
                     onChange={handleChange}
-                    sx={{ mb: 2 }}
+                    sx={{ mb: 2, width: '100%' }}
                     InputLabelProps={{
                       sx: {
                         color: colors.greenAccent[300], // Set the label color
@@ -150,14 +150,15 @@ const EventForm = () => {
                       },
                     }}
                   />
+                  <Typography variant="body1" color={colors.greenAccent[300]}>
+                    End Time
+                  </Typography>
                   <TextField
-                    fullWidth
                     type="datetime-local"
-                    label="End Time"
                     name="eventEndTime"
                     value={formData.eventEndTime}
                     onChange={handleChange}
-                    sx={{ mb: 2 }}
+                    sx={{ mb: 2, width: '100%' }}
                     InputLabelProps={{
                       sx: {
                         color: colors.greenAccent[300], // Set the label color
@@ -222,7 +223,7 @@ const EventForm = () => {
                     </Button>
                     <Button
                       variant="contained"
-                      onClick={() => navigate(`/eventDetail/${event.id}`)}
+                      onClick={() => navigate(`/event-detail/${event.id}`)}
                       sx={{
                         backgroundColor: colors.greenAccent[500],
                         color: theme.palette.grey[100],

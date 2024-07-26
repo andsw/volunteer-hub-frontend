@@ -20,6 +20,7 @@ import { ExpandLess } from '@mui/icons-material';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import Collapse from '@mui/material/Collapse';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
+import { deleteObject } from '../../data/api';
 
 import { getEventDetail } from '../../data/api';
 
@@ -41,6 +42,7 @@ const EventDetail = () => {
     const fetchEventDetail = async () => {
       try {
         const data = await getEventDetail(parseInt(id));
+        data.positions = data.positions.filter((p) => p.id !== null)
         setEvent(data);
         setReviews(JSON.parse(data.reviewsJson));
       } catch (error) {
@@ -150,9 +152,29 @@ const EventDetail = () => {
                 <Typography variant="h4" color={colors.greenAccent[400]} mb={2}>
                   Positions
                 </Typography>
+                {(event.positions && event.positions.length != 0) || <Box display='flex' flexDirection="column">
+                  <h4 style={{color: colors.greenAccent[400]}}>no positions</h4>
+                  <Button
+                    variant="contained"
+                    onClick={() => navigate('/position-form')}
+                    sx={{
+                      backgroundColor: colors.greenAccent[600],
+                      color: colors.grey[100],
+                      width: "170px",
+                      fontSize: "14px",
+                      fontWeight: "bold",
+                      padding: "10px 20px",
+                      '&:hover': {
+                        backgroundColor: colors.greenAccent[700],
+                      }
+                    }}
+                  >
+                    Create a position?
+                  </Button>
+                </Box>}
                 <List>
-                  {event.positions.map((position) => (
-                    <ListItem key={position.id} component="a" onClick={() => {navigate(`/position-detail/${position.id}`)}} sx={{ color: colors.grey[100], textDecoration: 'none' }}>
+                  {event.positions.map((position) => {
+                    return <ListItem key={position.id} component="a" onClick={() => { navigate(`/position-detail/${position.id}`) }} sx={{ color: colors.grey[100], textDecoration: 'none' }}>
                       <ListItemAvatar>
                         <Avatar sx={{ bgcolor: colors.greenAccent[600] }}>
                           <WorkIcon />
@@ -160,7 +182,7 @@ const EventDetail = () => {
                       </ListItemAvatar>
                       <ListItemText primary={position.name} secondary={`Recruits: ${position.recruitNum}`} />
                     </ListItem>
-                  ))}
+                  })}
                 </List>
               </Grid>
               <Grid item xs={12}>
@@ -183,7 +205,9 @@ const EventDetail = () => {
                   </Button>
                   <Button
                     variant="contained"
-                    onClick={() => {/* Add delete logic */ }}
+                    onClick={async () => {
+                      await deleteObject('event', event.id)
+                    }}
                     sx={{
                       backgroundColor: colors.greenAccent[600],
                       color: colors.grey[100],
@@ -250,7 +274,7 @@ const EventDetail = () => {
                       sx={{ border: `1px solid ${colors.greenAccent[300]}` }}
                     >
                       <Box display="flex" alignItems="center" mb={1}>
-                        <Avatar src={review.volunteer_avatar_link} 
+                        <Avatar src={review.volunteer_avatar_link}
                           style={{ width: 25, height: 25, borderRadius: '50%', marginRight: 10 }}
                           alt={`${review.volunteer_name} ${review.volunteer_name}`}>
                           {review.volunteer_name[0]}
@@ -266,8 +290,8 @@ const EventDetail = () => {
                         </Typography>
                         <Box ml={2} display="flex" alignItems="center">
                           <Typography variant="body2" color={colors.grey[400]}>
-                          <ThumbUpOffAltIcon sx={{ color: colors.grey[400] }} /> 
-                          {review.review_likes_num}
+                            <ThumbUpOffAltIcon sx={{ color: colors.grey[400] }} />
+                            {review.review_likes_num}
                           </Typography>
                         </Box>
                       </Box>
