@@ -8,6 +8,18 @@ export const fetchEvents = async (orgId) => {
   }
 };
 
+export const fetchPositions = async (orgId) => {
+  if (orgId) {
+    return await fetchData(`/position?orgId=${orgId}`);
+  } else {
+    return await fetchData('/position');
+  }
+};
+
+export const getPositionDetail = async (id) => {
+  return await fetchData(`/position/${id}/detail`);
+}
+
 export const saveProfile = async (account) => {
   return await axios.post(`${process.env.REACT_APP_SERVER_HOST}/account`, account);
 }

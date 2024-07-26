@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom";
-import Team from "./scenes/team";
+import Positions from "./scenes/positions";
 import Invoices from "./scenes/invoices";
 import Contacts from "./scenes/contacts";
 import FAQ from "./scenes/faq";
@@ -15,6 +15,7 @@ import { AuthProvider } from "./firebase/authContext";
 import { AccountProvider } from "./data/AccountProvider";
 import Profile from "./scenes/profile";
 import EventForm from "./scenes/eventForm";
+import PositionDetail from "./scenes/positionDetail";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -28,10 +29,11 @@ function App() {
               <Route path="/" element={<Login />} />
               <Route path="/login" element={<Login />} />
               <Route path="/reister" element={<Register />} />
-              <Route path="/events" element={<Events />} />
+              <Route path="/events/:id?" element={<Events />} />
               <Route path="/event-detail/:id" element={<EventDetail />} />
               <Route path="/event-form" element={<EventForm />} />
-              <Route path="/team" element={<Team />} />
+              <Route path="/position" element={<Positions />} />
+              <Route path="/position-detail/:id" element={<PositionDetail />} />
               <Route path="/contacts" element={<Contacts />} />
               <Route path="/invoices" element={<Invoices />} />
               <Route path="/profile" element={<Profile />} />

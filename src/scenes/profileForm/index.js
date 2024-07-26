@@ -56,7 +56,6 @@ const ProfileForm = () => {
 
   const handleFormSubmit = (values, { setSubmitting }) => {
     values.avatarImgUrl = authInfo.currentUser.photoURL;
-    console.log(values);
     saveProfile(values);
     setSubmitting(false);
     navigate('/events')

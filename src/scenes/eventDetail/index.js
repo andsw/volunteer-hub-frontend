@@ -152,7 +152,7 @@ const EventDetail = () => {
                 </Typography>
                 <List>
                   {event.positions.map((position) => (
-                    <ListItem key={position.id} component="a" href="#" sx={{ color: colors.grey[100], textDecoration: 'none' }}>
+                    <ListItem key={position.id} component="a" onClick={() => {navigate(`/position-detail/${position.id}`)}} sx={{ color: colors.grey[100], textDecoration: 'none' }}>
                       <ListItemAvatar>
                         <Avatar sx={{ bgcolor: colors.greenAccent[600] }}>
                           <WorkIcon />

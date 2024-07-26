@@ -155,7 +155,7 @@ const Sidebar = () => {
             {
               (userIsAdmin || userIsOrganization) &&
               <Item
-                title="Manage Events"
+                title="Events"
                 to="/events"
                 icon={<VolunteerActivismIcon />}
                 selected={selected}
@@ -165,8 +165,8 @@ const Sidebar = () => {
             {
               (userIsAdmin || userIsOrganization) &&
               <Item
-                title="Manage Team"
-                to="/team"
+                title="Positions"
+                to="/position"
                 icon={<PeopleOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
