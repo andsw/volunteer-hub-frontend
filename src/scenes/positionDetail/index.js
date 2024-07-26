@@ -53,17 +53,17 @@ const PositionDetail = () => {
   }
 
   const handleEdit = () => {
-    navigate(`/edit-position/${position.id}`);
+    navigate(`/position-form`, {state: {position}});
   };
 
   const handleDelete = () => {
     // Implement delete logic
     alert('Position deleted');
-    navigate('/positions');
+    navigate('/position');
   };
 
   const handleBackToList = () => {
-    navigate('/positions');
+    navigate('/position');
   };
 
   return (

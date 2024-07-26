@@ -20,6 +20,7 @@ import { useNavigate } from "react-router-dom";
 import { Add } from "@mui/icons-material";
 import { useAccount } from "../../data/AccountProvider";
 import { useParams } from "react-router-dom";
+import { getEventDetail } from "../../data/api";
 
 const Events = () => {
   const theme = useTheme();
@@ -46,8 +47,9 @@ const Events = () => {
     }
   }, [loadingAccount]);
 
-  const handleEdit = (id) => {
-    navigate(`/event-form/${id}`);
+  const handleEdit = async (id) => {
+    const event = await getEventDetail(parseInt(id));
+    navigate(`/event-form`, { state: { event } });
   };
 
   const handleView = (id) => {

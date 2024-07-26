@@ -15,6 +15,7 @@ import { AuthProvider } from "./firebase/authContext";
 import { AccountProvider } from "./data/AccountProvider";
 import Profile from "./scenes/profile";
 import EventForm from "./scenes/eventForm";
+import PositionForm from "./scenes/positionForm";
 import PositionDetail from "./scenes/positionDetail";
 
 function App() {
@@ -34,6 +35,7 @@ function App() {
               <Route path="/event-form" element={<EventForm />} />
               <Route path="/position" element={<Positions />} />
               <Route path="/position-detail/:id" element={<PositionDetail />} />
+              <Route path="/position-form" element={<PositionForm />} />
               <Route path="/contacts" element={<Contacts />} />
               <Route path="/invoices" element={<Invoices />} />
               <Route path="/profile" element={<Profile />} />
