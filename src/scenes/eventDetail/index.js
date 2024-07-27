@@ -26,7 +26,7 @@ import { getEventDetail } from '../../data/api';
 
 const EventDetail = () => {
   const theme = useTheme();
-  const colors = tokens(theme.palette.mode); // Adjust colors based on the current theme mode
+  const colors = tokens(theme.palette.mode);
   const { id } = useParams();
   const navigate = useNavigate();
   const [event, setEvent] = React.useState(null);

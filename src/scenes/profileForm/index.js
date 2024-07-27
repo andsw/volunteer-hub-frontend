@@ -16,6 +16,7 @@ import { saveProfile } from "../../data/api";
 import { useAuth } from "../../firebase/authContext";
 import { useLocation, useNavigate } from "react-router-dom";
 import LogoUploader from "../../components/LogoUploader";
+import { useAccount } from "../../data/AccountProvider";
 
 const ProfileForm = () => {
   useAuthRedirect();
@@ -25,9 +26,9 @@ const ProfileForm = () => {
   const [isSidebar, setIsSidebar] = useState(true);
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const authInfo = useAuth();
+  const {setAccount} = useAccount();
   const location = useLocation(); // Use this to get location state
   const { profile } = location.state || {}; // Extract profile from location state
-
   // Set initial form values based on profile
   const [initialValues, setInitialValues] = useState({
     accountType: profile?.accountType || "",
@@ -45,7 +46,7 @@ const ProfileForm = () => {
     nationality: profile?.nationality || "",
     maritalStatus: profile?.maritalStatus || "",
     occupationStatus: profile?.occupationStatus || "",
-    has_drivers_licence: profile?.has_drivers_licence || "",
+    hasDriversLicence: profile?.hasDriversLicence || "",
     skills: profile?.skills || "",
     academicCertificate: profile?.academicCertificate || "",
     resumeLink: profile?.resumeLink || "",
@@ -54,11 +55,12 @@ const ProfileForm = () => {
     officialSiteLink: profile?.officialSiteLink || "",
   });
 
-  const handleFormSubmit = (values, { setSubmitting }) => {
+  const handleFormSubmit = async (values, { setSubmitting }) => {
     values.avatarImgUrl = authInfo.currentUser.photoURL;
-    saveProfile(values);
+    await saveProfile(values);
     setSubmitting(false);
-    navigate('/events')
+    setAccount(values)
+    navigate('/profile')
   };
 
   const handleAccountTypeChange = (event, setFieldValue) => {
@@ -74,7 +76,7 @@ const ProfileForm = () => {
       setFieldValue('nationality', '');
       setFieldValue('maritalStatus', '');
       setFieldValue('occupationStatus', '');
-      setFieldValue('has_drivers_licence', '');
+      setFieldValue('hasDriversLicence', '');
       setFieldValue('skills', '');
       setFieldValue('academicCertificate', '');
       setFieldValue('resumeLink', '');
@@ -86,7 +88,7 @@ const ProfileForm = () => {
       setFieldValue('nationality', '');
       setFieldValue('maritalStatus', '');
       setFieldValue('occupationStatus', '');
-      setFieldValue('has_drivers_licence', false);
+      setFieldValue('hasDriversLicence', false);
       setFieldValue('skills', '');
       setFieldValue('academicCertificate', '');
       setFieldValue('resumeLink', '');
@@ -143,7 +145,7 @@ const ProfileForm = () => {
                       id="accountType"
                       name="accountType"
                       value={values.accountType}
-                      disabled={profile?.accountType !== ''}
+                      disabled={profile != null && profile?.accountType !== ''}
                       onChange={(event) => handleAccountTypeChange(event, setFieldValue)}
                       onBlur={handleBlur}
                       error={!!touched.accountType && !!errors.accountType}
@@ -266,17 +268,17 @@ const ProfileForm = () => {
                         <InputLabel id="has_drivers_licence-label">Driver's License</InputLabel>
                         <Select
                           labelId="has_drivers_licence-label"
-                          id="has_drivers_licence"
-                          name="has_drivers_licence"
-                          value={values.has_drivers_licence}
+                          id="hasDriversLicence"
+                          name="hasDriversLicence"
+                          value={values.hasDriversLicence}
                           onChange={handleChange}
                           onBlur={handleBlur}
-                          error={!!touched.has_drivers_licence && !!errors.has_drivers_licence}
+                          error={!!touched.hasDriversLicence && !!errors.hasDriversLicence}
                         >
-                          <MenuItem value="yes">Yes</MenuItem>
-                          <MenuItem value="no">No</MenuItem>
+                          <MenuItem value="true" >Yes</MenuItem>
+                          <MenuItem value="false">No</MenuItem>
                         </Select>
-                        {touched.has_drivers_licence && errors.has_drivers_licence && <FormHelperText>{errors.has_drivers_licence}</FormHelperText>}
+                        {touched.hasDriversLicence && errors.hasDriversLicence && <FormHelperText>{errors.hasDriversLicence}</FormHelperText>}
                       </FormControl>
                       <TextField
                         fullWidth
@@ -334,71 +336,6 @@ const ProfileForm = () => {
                         name="address"
                         error={!!touched.name && !!errors.name}
                         helperText={touched.name && errors.name}
-                        sx={{ gridColumn: "span 2" }}
-                      />
-                      <TextField
-                        fullWidth
-                        variant="filled"
-                        type="text"
-                        label="Address"
-                        onBlur={handleBlur}
-                        onChange={handleChange}
-                        value={values.address}
-                        name="address"
-                        error={!!touched.address && !!errors.address}
-                        helperText={touched.address && errors.address}
-                        sx={{ gridColumn: "span 2" }}
-                      />
-                      <TextField
-                        fullWidth
-                        variant="filled"
-                        type="text"
-                        label="City"
-                        onBlur={handleBlur}
-                        onChange={handleChange}
-                        value={values.city}
-                        name="city"
-                        error={!!touched.city && !!errors.city}
-                        helperText={touched.city && errors.city}
-                        sx={{ gridColumn: "span 2" }}
-                      />
-                      <TextField
-                        fullWidth
-                        variant="filled"
-                        type="text"
-                        label="Province/State"
-                        onBlur={handleBlur}
-                        onChange={handleChange}
-                        value={values.province}
-                        name="province"
-                        error={!!touched.province && !!errors.province}
-                        helperText={touched.province && errors.province}
-                        sx={{ gridColumn: "span 2" }}
-                      />
-                      <TextField
-                        fullWidth
-                        variant="filled"
-                        type="text"
-                        label="Country"
-                        onBlur={handleBlur}
-                        onChange={handleChange}
-                        value={values.country}
-                        name="country"
-                        error={!!touched.country && !!errors.country}
-                        helperText={touched.country && errors.country}
-                        sx={{ gridColumn: "span 2" }}
-                      />
-                      <TextField
-                        fullWidth
-                        variant="filled"
-                        type="text"
-                        label="Postcode/Zipcode"
-                        onBlur={handleBlur}
-                        onChange={handleChange}
-                        value={values.postcode}
-                        name="postcode"
-                        error={!!touched.postcode && !!errors.postcode}
-                        helperText={touched.postcode && errors.postcode}
                         sx={{ gridColumn: "span 2" }}
                       />
                       <TextField

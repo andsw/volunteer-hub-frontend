@@ -153,7 +153,6 @@ const Sidebar = () => {
               </Typography>
             }
             {
-              (userIsAdmin || userIsOrganization) &&
               <Item
                 title="Events"
                 to="/events"
@@ -163,7 +162,6 @@ const Sidebar = () => {
               />
             }
             {
-              (userIsAdmin || userIsOrganization) &&
               <Item
                 title="Positions"
                 to="/position"

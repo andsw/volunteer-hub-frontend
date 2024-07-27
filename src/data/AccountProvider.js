@@ -16,7 +16,6 @@ export const AccountProvider = ({ children }) => {
       if (currentUser && currentUser.email) {
         try {
           const accountData = await getAccountByEmail(currentUser.email);
-          console.log(accountData);
           setAccount(accountData);
         } catch (err) {
           console.error(err);
