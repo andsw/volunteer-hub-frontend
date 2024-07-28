@@ -19,6 +19,8 @@ import PositionForm from "./scenes/positionForm";
 import PositionDetail from "./scenes/positionDetail";
 import Home from "./scenes/home";
 import PrivateMessage from "./scenes/privateMessage";
+import About from "./scenes/about";
+import ContactUs from "./scenes/contactUs";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -46,6 +48,8 @@ function App() {
               <Route path="/message" element={<PrivateMessage />} />
               <Route path="/faq" element={<FAQ />} />
               <Route path="/calendar" element={<Calendar />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/contact" element={<ContactUs/>}/>
             </Routes>
           </AccountProvider>
         </AuthProvider>

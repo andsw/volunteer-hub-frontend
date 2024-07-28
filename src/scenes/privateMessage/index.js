@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { tokens } from "../../theme";
 import { get, db, ref, onValue, push, set, update } from '../../firebase/firebase'; // Import Firebase Realtime Database instance
-import { TextField, Button, List, Paper, ListItem, useTheme, ListItemText, Box, Typography } from '@mui/material';
+import { TextField, Button, Avatar, Badge, List, Paper, ListItem, useTheme, ListItemText, Box, Typography } from '@mui/material';
 import { useAccount } from '../../data/AccountProvider';
 import { useLocation } from 'react-router-dom';
 import Topbar from "../global/Topbar";
@@ -13,8 +13,8 @@ import { useNavigate } from 'react-router-dom';
 const MessageBox = styled(Box)(({ theme, owner }) => ({
   maxWidth: '60%',
   padding: theme.spacing(1, 2),
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: owner === 'true' ? 'green' : 'grey',
+  borderRadius: '15px',
+  backgroundColor: owner === 'true' ? 'green' : 'beige',
   marginBottom: theme.spacing(1),
   marginLeft: owner === 'true' ? 'auto' : 0,
   wordBreak: 'break-word',
@@ -27,6 +27,15 @@ const ContactList = styled(Box)(({ theme }) => ({
   overflowY: 'auto',
   padding: theme.spacing(2),
   borderRight: `1px solid ${theme.palette.divider}`,
+}));
+
+const ContactItem = styled(ListItem)(({ theme, active }) => ({
+  borderRadius: theme.shape.borderRadius,
+  marginBottom: theme.spacing(1),
+  backgroundColor: active ? theme.palette.action.selected : 'transparent',
+  '&:hover': {
+    backgroundColor: theme.palette.action.hover,
+  },
 }));
 
 const PrivateMessage = () => {
@@ -45,12 +54,38 @@ const PrivateMessage = () => {
   const fromName = isVolunteer ? account?.firstName : account?.name;
   const [unreadCount, setUnreadCount] = useState(0);
 
+  const [activeContact, setActiveContact] = useState(null);
   const [contacts, setContacts] = useState([]);
   const navigate = useNavigate();
 
+  // useEffect(() => {
+  //   if (!fromId) return;
+
+  //   const chatsRef = ref(db, 'chats');
+  //   const unsubscribe = onValue(chatsRef, (snapshot) => {
+  //     const data = snapshot.val();
+  //     if (data) {
+  //       const contactsList = [];
+  //       Object.entries(data).forEach(([chatId, messages]) => {
+  //         const lastMessage = Object.values(messages).sort((a, b) => b.timestamp - a.timestamp)[0];
+  //         if (lastMessage.sender === fromId || lastMessage.receiver === fromId) {
+  //           contactsList.push({
+  //             id: lastMessage.sender === fromId ? lastMessage.receiver : lastMessage.sender,
+  //             name: lastMessage.sender === fromId ? lastMessage.receiverName : lastMessage.senderName,
+  //             lastMessage: lastMessage.text,
+  //             timestamp: lastMessage.timestamp,
+  //           });
+  //         }
+  //       });
+  //       setContacts(contactsList);
+  //     }
+  //   });
+
+  //   return () => unsubscribe();
+  // }, [fromId]);
   useEffect(() => {
     if (!fromId) return;
-
+  
     const chatsRef = ref(db, 'chats');
     const unsubscribe = onValue(chatsRef, (snapshot) => {
       const data = snapshot.val();
@@ -59,18 +94,22 @@ const PrivateMessage = () => {
         Object.entries(data).forEach(([chatId, messages]) => {
           const lastMessage = Object.values(messages).sort((a, b) => b.timestamp - a.timestamp)[0];
           if (lastMessage.sender === fromId || lastMessage.receiver === fromId) {
+            const hasUnread = Object.values(messages).some(
+              msg => msg.receiver === fromId && msg.status === 'unread'
+            );
             contactsList.push({
               id: lastMessage.sender === fromId ? lastMessage.receiver : lastMessage.sender,
               name: lastMessage.sender === fromId ? lastMessage.receiverName : lastMessage.senderName,
               lastMessage: lastMessage.text,
               timestamp: lastMessage.timestamp,
+              hasUnread,
             });
           }
         });
         setContacts(contactsList);
       }
     });
-
+  
     return () => unsubscribe();
   }, [fromId]);
 
@@ -148,15 +187,29 @@ const PrivateMessage = () => {
       <main className="content" style={{ flex: 1, overflow: 'auto' }}>
         <Topbar setIsSidebar={setIsSidebar} />
         <Box sx={{ padding: '40px', display: 'flex' }}>
-          <ContactList>
+        <ContactList>
             <Typography variant="h6" mb={2}>Contacts</Typography>
             <List>
               {contacts.map((contact) => (
-                <ListItem 
+                <ContactItem 
                   key={contact.id} 
                   button 
                   onClick={() => handleContactClick(contact.id, contact.name)}
+                  active={activeContact === contact.id}
                 >
+                  <Badge
+                    color="error"
+                    variant="dot"
+                    invisible={!contact.hasUnread}
+                    anchorOrigin={{
+                      vertical: 'bottom',
+                      horizontal: 'right',
+                    }}
+                  >
+                    <Avatar sx={{ marginRight: 2 }}>
+                      {contact.name.charAt(0)}
+                    </Avatar>
+                  </Badge>
                   <ListItemText 
                     primary={contact.name}
                     secondary={`${contact.lastMessage.substring(0, 20)}...`}
@@ -164,7 +217,7 @@ const PrivateMessage = () => {
                   <Typography variant="caption">
                     {format(new Date(contact.timestamp), 'MM/dd/yyyy HH:mm')}
                   </Typography>
-                </ListItem>
+                </ContactItem>
               ))}
             </List>
           </ContactList>
