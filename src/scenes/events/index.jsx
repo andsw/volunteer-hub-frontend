@@ -28,7 +28,8 @@ const Events = () => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const { account, loadingAccount } = useAccount();
-  const navigate = useNavigate(); 
+  const isVolunteer = account && account.accountType === 'volunteer'
+  const navigate = useNavigate();
   const { orgId } = useParams();
 
   useEffect(() => {
@@ -122,27 +123,27 @@ const Events = () => {
     {
       field: "actions",
       headerName: "",
-      renderHeader: () => <SettingsIcon />,
+      renderHeader: () => <Tooltip title="actions"><SettingsIcon /></Tooltip>,
       flex: 0.2,
       headerAlign: 'center',
       align: 'center',
       renderCell: (params) => (
         <Box>
-          <Tooltip title="Edit">
+          {!isVolunteer && <Tooltip title="Edit">
             <IconButton onClick={() => handleEdit(params.row.id)} size="small">
               <EditIcon />
             </IconButton>
-          </Tooltip>
+          </Tooltip>}
           <Tooltip title="More info">
             <IconButton onClick={() => handleView(params.row.id)} size="small">
               <RemoveRedEyeIcon />
             </IconButton>
           </Tooltip>
-          <Tooltip title="Delete">
+          {!isVolunteer && <Tooltip title="Delete">
             <IconButton onClick={() => handleDelete(params.row.id)} size="small">
               <DeleteIcon />
             </IconButton>
-          </Tooltip>
+          </Tooltip>}
         </Box>
       ),
     },
@@ -190,7 +191,7 @@ const Events = () => {
               loading={loading}
             />
           </Box>
-          <Fab
+          {!isVolunteer && <Fab
             color="primary"
             aria-label="add"
             sx={{
@@ -206,7 +207,7 @@ const Events = () => {
             onClick={handleAddEvent}
           >
             <Add />
-          </Fab>
+          </Fab>}
         </Box>
       </main>
     </div>

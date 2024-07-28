@@ -1,6 +1,6 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Box, Grid, Typography, Paper, Avatar, Button } from '@mui/material';
+import { Box, Grid, Typography, Tooltip, Fab, Paper, Avatar, Button } from '@mui/material';
 import { tokens } from "../../theme";
 import BusinessIcon from '@mui/icons-material/Business';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
@@ -9,9 +9,9 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import GradeIcon from '@mui/icons-material/Grade';
 import CommentIcon from '@mui/icons-material/Comment';
+import Header from "../../components/Header";
 import PeopleIcon from '@mui/icons-material/People';
 import ListAltIcon from '@mui/icons-material/ListAlt';
-import WorkIcon from '@mui/icons-material/Work';
 import PersonIcon from '@mui/icons-material/Person';
 import EmailIcon from '@mui/icons-material/Email';
 import { useTheme } from '@mui/material/styles';
@@ -19,6 +19,8 @@ import Topbar from "../global/Topbar";
 import Sidebar from "../global/Sidebar";
 import { getPositionDetail } from '../../data/api';
 import ButtonGroup from '@mui/material/ButtonGroup';
+import MessageIcon from '@mui/icons-material/Message';
+import { useAccount } from '../../data/AccountProvider';
 
 const PositionDetail = () => {
   const { id } = useParams();
@@ -28,6 +30,8 @@ const PositionDetail = () => {
   const [position, setPosition] = React.useState(null);
   const [loading, setLoading] = React.useState(true);
   const [isSidebar, setIsSidebar] = React.useState(true);
+  const { account } = useAccount();
+  const isVolunteer = account && account.accountType === 'volunteer'
 
   React.useEffect(() => {
     const fetchPositionDetail = async () => {
@@ -53,7 +57,7 @@ const PositionDetail = () => {
   }
 
   const handleEdit = () => {
-    navigate(`/position-form`, {state: {position}});
+    navigate(`/position-form`, { state: { position } });
   };
 
   const handleDelete = () => {
@@ -72,30 +76,25 @@ const PositionDetail = () => {
       <main className="content" style={{ flex: 1, overflow: 'auto' }}>
         <Topbar setIsSidebar={setIsSidebar} />
         <Box m="20px">
-          <Typography variant="h4" color={colors.greenAccent[500]}>
-            Position Details
-          </Typography>
-          <Typography variant="h6" color="textSecondary">
-            {position.name}
-          </Typography>
+          <Header title="Position Details" subtitle={position.name} />
           <Paper elevation={3} style={{ padding: '20px', backgroundColor: colors.background }}>
             <Grid container spacing={3}>
               <Grid item xs={12}>
                 <Typography variant="h4" color={colors.greenAccent[500]}>
                   {position.name}
                 </Typography>
-                <Typography variant="h6" sx={{ mt: 1 }}>
-                  Ideal For: {position.idealFor}
-                </Typography>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <Box display="flex" alignItems="center" mb={2}>
-                  <BusinessIcon sx={{ mr: 1, color: colors.greenAccent[500] }} />
-                  <Avatar src={position.organization.logoUrl} sx={{ mr: 2, width: 50, height: 50 }} />
-                  <Typography component="a" href={`/events/${position.event.organizationId}`} sx={{ textDecoration: 'none', color: colors.greenAccent[500] }}>
-                    {position.organization.name}
-                  </Typography>
-                </Box>
+                {
+                  position.organization &&
+                  <Box display="flex" alignItems="center" mb={2}>
+                    <BusinessIcon sx={{ mr: 1, color: colors.greenAccent[500] }} />
+                    <Avatar src={position.organization?.logoUrl} sx={{ mr: 2, width: 50, height: 50 }} />
+                    <Typography component="a" href={`/events/${position.event.organizationId}`} sx={{ textDecoration: 'none', color: colors.greenAccent[500] }}>
+                      {position.organization.name}
+                    </Typography>
+                  </Box>
+                }
                 <Box display="flex" alignItems="center" mb={2}>
                   <LocationOnIcon sx={{ mr: 1, color: colors.greenAccent[500] }} />
                   <Typography>Working Condition: {position.workingCondition}</Typography>
@@ -121,7 +120,7 @@ const PositionDetail = () => {
               </Grid>
               <Grid item xs={12} sm={6}>
                 <Box display="flex" alignItems="center" mb={2}>
-                  <FavoriteIcon sx={{ mr: 1, color: colors.greenAccent[500] }} />
+                  <FavoriteIcon sx={{ mr: 1, color: colors.redAccent[400] }} />
                   <Typography>Recruitment Target: {position.recruitNum}</Typography>
                 </Box>
                 <Box display="flex" alignItems="center" mb={2}>
@@ -129,11 +128,11 @@ const PositionDetail = () => {
                   <Typography>Recruited: {position.recruitedNum}</Typography>
                 </Box>
                 <Box display="flex" alignItems="center" mb={2}>
-                  <CommentIcon sx={{ mr: 1, color: colors.greenAccent[500] }} />
+                  <CommentIcon sx={{ mr: 1, color: colors.blueAccent[500] }} />
                   <Typography>Reviews: {position.recruitNum}</Typography>
                 </Box>
                 <Box display="flex" alignItems="center">
-                  <PeopleIcon sx={{ mr: 1, color: colors.greenAccent[500] }} />
+                  <PeopleIcon sx={{ mr: 1, color: colors.greenAccent[400] }} />
                   <Typography>Joined Volunteers: {position.recruitedNum}</Typography>
                 </Box>
               </Grid>
@@ -151,7 +150,22 @@ const PositionDetail = () => {
               </Grid>
               <Grid item xs={12}>
                 <ButtonGroup>
-                  <Button
+                  {isVolunteer && <Button
+                    variant="contained"
+                    onClick={() => {
+
+                    }}
+                    sx={{
+                      backgroundColor: colors.blueAccent[500],
+                      color: 'white',
+                      '&:hover': {
+                        backgroundColor: colors.blueAccent[600],
+                      }
+                    }}
+                  >
+                    apply
+                  </Button>}
+                  {!isVolunteer && <Button
                     variant="contained"
                     onClick={handleEdit}
                     sx={{
@@ -163,8 +177,8 @@ const PositionDetail = () => {
                     }}
                   >
                     Edit
-                  </Button>
-                  <Button
+                  </Button>}
+                  {!isVolunteer && <Button
                     variant="contained"
                     onClick={handleDelete}
                     sx={{
@@ -176,7 +190,7 @@ const PositionDetail = () => {
                     }}
                   >
                     Delete
-                  </Button>
+                  </Button>}
                   <Button
                     variant="contained"
                     onClick={handleBackToList}
@@ -194,6 +208,34 @@ const PositionDetail = () => {
               </Grid>
             </Grid>
           </Paper>
+          <Tooltip title="talk with organizer?">
+            <span>
+              {isVolunteer && <Fab
+                color="primary"
+                aria-label="add"
+                sx={{
+                  position: 'fixed',
+                  bottom: 16,
+                  right: 16,
+                  backgroundColor: colors.blueAccent[700],
+                  color: colors.grey[100],
+                  '&:hover': {
+                    backgroundColor: colors.blueAccent[400],
+                  }
+                }}
+                onClick={() => navigate('/message', {
+                  state: {
+                    toId: position.organization.id,
+                    toName: position.organization.name,
+                    positionId: position.id,
+                    positionName: position.name
+                  }
+                })}
+              >
+                <MessageIcon />
+              </Fab>}
+            </span>
+          </Tooltip>
         </Box>
       </main>
     </div>

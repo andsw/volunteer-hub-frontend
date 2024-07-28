@@ -30,7 +30,7 @@ import PublicIcon from '@mui/icons-material/Public';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 import HomeIcon from '@mui/icons-material/Home';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Header from "../../components/Header";
 import Topbar from "../global/Topbar";
 import WcIcon from '@mui/icons-material/Wc';
@@ -38,6 +38,7 @@ import Sidebar from "../global/Sidebar";
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import { styled } from '@mui/material/styles';
 import { useAccount } from '../../data/AccountProvider';
+import { getAccountByAccountId } from "../../data/api";
 
 const ProfilePaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(3),
@@ -59,10 +60,32 @@ const Profile = () => {
   const colors = tokens(theme.palette.mode);
   const [isSidebar, setIsSidebar] = useState(true);
   const navigate = useNavigate();
+  const [profile, setProfile] = useState({});
   const { account, loadingAccount } = useAccount();
+  const {id} = useParams();
+
+  useEffect(() => {
+    if (id) {
+      const fetchAccountData = async () => {
+        try {
+          const accountData = await getAccountByAccountId(id);
+          setProfile(accountData);
+        } catch (err) {
+          console.error(err);
+        }
+      };
+      fetchAccountData();
+    } else {
+      setProfile(account);
+    }
+  }, [id, loadingAccount]);
 
   if (loadingAccount) {
     return <Typography>Loading account...</Typography>;
+  }
+  
+  if (id && !profile?.email) {
+    return <Typography>Account profile not found</Typography>;
   }
 
   const isVolunteer = account?.accountType === 'volunteer';
@@ -71,31 +94,31 @@ const Profile = () => {
     <>
       <ListItem>
         <LocalPostOfficeIcon sx={{ mr: 2, color: colors.greenAccent[400] }} />
-        <ListItemText primary="Email" secondary={account?.email || ''} />
+        <ListItemText primary="Email" secondary={profile?.email || ''} />
       </ListItem>
       <ListItem>
         <LocalPhoneIcon sx={{ mr: 2, color: colors.greenAccent[400] }} />
-        <ListItemText primary="Phone" secondary={account?.phone || ''} />
+        <ListItemText primary="Phone" secondary={profile?.phone || ''} />
       </ListItem>
       <ListItem>
         <ControlCameraIcon sx={{ mr: 2, color: colors.greenAccent[400] }} />
-        <ListItemText primary="Address" secondary={account?.address || ''} />
+        <ListItemText primary="Address" secondary={profile?.address || ''} />
       </ListItem>
       <ListItem>
         <LocationCityIcon sx={{ mr: 2, color: colors.greenAccent[400] }} />
-        <ListItemText primary="City" secondary={account?.city || ''} />
+        <ListItemText primary="City" secondary={profile?.city || ''} />
       </ListItem>
       <ListItem>
         <HomeIcon sx={{ mr: 2, color: colors.greenAccent[400] }} />
-        <ListItemText primary="Province" secondary={account?.province || ''} />
+        <ListItemText primary="Province" secondary={profile?.province || ''} />
       </ListItem>
       <ListItem>
         <LanguageIcon sx={{ mr: 2, color: colors.greenAccent[400] }} />
-        <ListItemText primary="Country" secondary={account?.country || ''} />
+        <ListItemText primary="Country" secondary={profile?.country || ''} />
       </ListItem>
       <ListItem>
         <LocalPostOfficeIcon sx={{ mr: 2, color: colors.greenAccent[400] }} />
-        <ListItemText primary="Postcode" secondary={account?.postcode || ''} />
+        <ListItemText primary="Postcode" secondary={profile?.postcode || ''} />
       </ListItem>
     </>
   );
@@ -104,42 +127,42 @@ const Profile = () => {
     <>
       <ListItem>
         <CalendarTodayIcon sx={{ mr: 2, color: colors.greenAccent[400] }} />
-        <ListItemText primary="Date of Birth" secondary={new Date(account?.dob).toLocaleDateString()} />
+        <ListItemText primary="Date of Birth" secondary={new Date(profile?.dob).toLocaleDateString()} />
       </ListItem>
       <ListItem>
         <WcIcon sx={{ mr: 2, color: colors.greenAccent[400] }} />
-        <ListItemText primary="Sex" secondary={account?.sex || ''} />
+        <ListItemText primary="Sex" secondary={profile?.sex || ''} />
       </ListItem>
       <ListItem>
         <PublicIcon sx={{ mr: 2, color: colors.greenAccent[400] }} />
-        <ListItemText primary="Nationality" secondary={account?.nationality || ''} />
+        <ListItemText primary="Nationality" secondary={profile?.nationality || ''} />
       </ListItem>
       <ListItem>
         <FavoriteIcon sx={{ mr: 2, color: colors.greenAccent[400] }} />
-        <ListItemText primary="Marital Status" secondary={account?.maritalStatus || ''} />
+        <ListItemText primary="Marital Status" secondary={profile?.maritalStatus || ''} />
       </ListItem>
       <ListItem>
         <WorkOutlineIcon sx={{ mr: 2, color: colors.greenAccent[400] }} />
-        <ListItemText primary="Occupation Status" secondary={account?.occupationStatus || ''} />
+        <ListItemText primary="Occupation Status" secondary={profile?.occupationStatus || ''} />
       </ListItem>
       <ListItem>
         <DirectionsCarIcon sx={{ mr: 2, color: colors.greenAccent[400] }} />
-        <ListItemText primary="Has Driver's License" secondary={account?.hasDriversLicence === 'true' ? 'Yes' : 'No'} />
+        <ListItemText primary="Has Driver's License" secondary={profile?.hasDriversLicence === 'true' ? 'Yes' : 'No'} />
       </ListItem>
       <ListItem>
         <DriveFileRenameOutlineIcon sx={{ mr: 2, color: colors.greenAccent[400] }} />
-        <ListItemText primary="Skills" secondary={account?.skills || ''} />
+        <ListItemText primary="Skills" secondary={profile?.skills || ''} />
       </ListItem>
       <ListItem>
         <SchoolIcon sx={{ mr: 2, color: colors.greenAccent[400] }} />
-        <ListItemText primary="Academic Certificate" secondary={account?.academicCertificate || ''} />
+        <ListItemText primary="Academic Certificate" secondary={profile?.academicCertificate || ''} />
       </ListItem>
       <ListItem>
         <ListItemText
           primary="Resume"
           secondary={
-            account?.resumeLink ? (
-              <Link href={account?.resumeLink} target="_blank" rel="noopener noreferrer">
+            profile?.resumeLink ? (
+              <Link href={profile?.resumeLink} target="_blank" rel="noopener noreferrer">
                 View Resume
               </Link>
             ) : 'Not provided'
@@ -153,14 +176,14 @@ const Profile = () => {
     <>
       <ListItem>
         <PeopleAltIcon sx={{ mr: 2, color: colors.greenAccent[400] }} />
-        <ListItemText primary="Organization Name" secondary={account?.name} />
+        <ListItemText primary="Organization Name" secondary={profile?.name} />
       </ListItem>
       <ListItem>
-        <Link href={account?.officialSiteLink} target="_blank" rel="noopener noreferrer">
+        <Link href={profile?.officialSiteLink} target="_blank" rel="noopener noreferrer">
           <RssFeedIcon sx={{ mr: 2, color: colors.greenAccent[400] }} />
           <ListItemText
             primary="Official Website"
-            secondary={account?.officialSiteLink || 'Not provided'}
+            secondary={profile?.officialSiteLink || 'Not provided'}
           />
         </Link>
       </ListItem>
@@ -179,16 +202,16 @@ const Profile = () => {
               <Grid container spacing={3} alignItems="center" direction="column">
                 <Grid item>
                   <LargeAvatar
-                    src={account?.avatarImgUrl}
-                    alt={isVolunteer ? `${account?.firstName} ${account?.lastName}` : account?.name}
+                    src={profile?.avatarImgUrl}
+                    alt={isVolunteer ? `${profile?.firstName} ${profile?.lastName}` : profile?.name}
                     sx={{ backgroundColor: colors.greenAccent[400] }}
                   >
-                    {isVolunteer ? `${account?.firstName ? account?.firstName[0] : ''}` : `${account?.name ? account?.name[0] : ''}`}
+                    {isVolunteer ? `${profile?.firstName ? profile?.firstName[0] : ''}` : `${profile?.name ? profile?.name[0] : ''}`}
                   </LargeAvatar>
                 </Grid>
                 <Grid item>
                   <Typography variant="h4" gutterBottom sx={{ color: colors.greenAccent[400] }}>
-                    {isVolunteer ? `${account?.firstName} ${account?.lastName}` : account?.name}
+                    {isVolunteer ? `${profile?.firstName || '?'} ${profile?.lastName || '?'}` : `${profile?.name || ''}`}
                   </Typography>
                 </Grid>
                 <Grid item>
@@ -206,7 +229,7 @@ const Profile = () => {
                 color="secondary"
                 variant="contained"
                 sx={{ mt: 3, backgroundColor: colors.greenAccent[600], '&:hover': { backgroundColor: colors.greenAccent[700] } }}
-                onClick={() => navigate('/profile-form', { state: { profile: account } })}
+                onClick={() => navigate('/profile-form', { state: { profile: profile } })}
               >
                 Edit Profile
               </Button>

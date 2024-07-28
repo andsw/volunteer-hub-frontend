@@ -18,6 +18,7 @@ import EventForm from "./scenes/eventForm";
 import PositionForm from "./scenes/positionForm";
 import PositionDetail from "./scenes/positionDetail";
 import Home from "./scenes/home";
+import PrivateMessage from "./scenes/privateMessage";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -40,8 +41,9 @@ function App() {
               <Route path="/position-form" element={<PositionForm />} />
               <Route path="/contacts" element={<Contacts />} />
               <Route path="/invoices" element={<Invoices />} />
-              <Route path="/profile" element={<Profile />} />
+              <Route path="/profile/:id?" element={<Profile />} />
               <Route path="/profile-form" element={<ProfileForm />} />
+              <Route path="/message" element={<PrivateMessage />} />
               <Route path="/faq" element={<FAQ />} />
               <Route path="/calendar" element={<Calendar />} />
             </Routes>

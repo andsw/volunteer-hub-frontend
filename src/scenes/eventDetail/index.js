@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Box, Typography, Button, Grid, Paper, useTheme, Avatar, List, ListItem, ListItemText, ListItemAvatar } from '@mui/material';
-import { tokens } from "../../theme"; // Make sure this function provides colors based on theme mode
+import { Box, Typography, ButtonGroup, Button, Grid, Paper, Avatar, useTheme, List, ListItem, ListItemText, ListItemAvatar } from '@mui/material';
+import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import Topbar from "../global/Topbar";
 import Sidebar from "../global/Sidebar";
@@ -124,11 +124,11 @@ const EventDetail = () => {
                   <Typography>Likes: {event.likesNum}</Typography>
                 </Box>
                 <Box display="flex" alignItems="center" mb={2}>
-                  <GradeIcon sx={{ mr: 1, color: colors.yellowAccent[400] }} />
+                  <GradeIcon sx={{ mr: 1, color: colors.greenAccent[500] }} />
                   <Typography>Collections: {event.collectionsNum}</Typography>
                 </Box>
                 <Box display="flex" alignItems="center" mb={2}>
-                  <CommentIcon sx={{ mr: 1, color: colors.blueAccent[400] }} />
+                <CommentIcon sx={{ mr: 1, color: colors.blueAccent[500] }} />
                   <Typography>Reviews: {event.reviewsNum}</Typography>
                 </Box>
                 <Box display="flex" alignItems="center">
@@ -153,7 +153,7 @@ const EventDetail = () => {
                   Positions
                 </Typography>
                 {(event.positions && event.positions.length != 0) || <Box display='flex' flexDirection="column">
-                  <h4 style={{color: colors.greenAccent[400]}}>no positions</h4>
+                  <h4 style={{ color: colors.greenAccent[400] }}>no positions</h4>
                   <Button
                     variant="contained"
                     onClick={() => navigate('/position-form')}
@@ -174,7 +174,7 @@ const EventDetail = () => {
                 </Box>}
                 <List>
                   {event.positions.map((position) => {
-                    return <ListItem key={position.id} component="a" onClick={() => { navigate(`/position-detail/${position.id}`) }} sx={{ color: colors.grey[100], textDecoration: 'none' }}>
+                    return <ListItem key={position.id} component="a" onClick={() => { navigate(`/position-detail/${position.id}`) }} sx={{ color: colors.grey[100], cursor: 'pointer', textDecoration: 'none' }}>
                       <ListItemAvatar>
                         <Avatar sx={{ bgcolor: colors.greenAccent[600] }}>
                           <WorkIcon />
@@ -186,58 +186,49 @@ const EventDetail = () => {
                 </List>
               </Grid>
               <Grid item xs={12}>
-                <Box display="flex" justifyContent="start" gap={1}>
-                  <Button
+                <ButtonGroup>
+                  (isVolunteer && <Button
                     variant="contained"
                     onClick={() => navigate('/event-form', { state: { event } })}
                     sx={{
-                      backgroundColor: colors.greenAccent[600],
-                      color: colors.grey[100],
-                      fontSize: "14px",
-                      fontWeight: "bold",
-                      padding: "10px 20px",
+                      backgroundColor: colors.greenAccent[500],
+                      color: 'white',
                       '&:hover': {
-                        backgroundColor: colors.greenAccent[700],
+                        backgroundColor: colors.greenAccent[600],
                       }
                     }}
                   >
                     Edit
-                  </Button>
-                  <Button
+                  </Button>)
+                  (isVolunteer && <Button
                     variant="contained"
                     onClick={async () => {
                       await deleteObject('event', event.id)
                     }}
                     sx={{
-                      backgroundColor: colors.greenAccent[600],
-                      color: colors.grey[100],
-                      fontSize: "14px",
-                      fontWeight: "bold",
-                      padding: "10px 20px",
+                      backgroundColor: 'error.main',
+                      color: 'white',
                       '&:hover': {
-                        backgroundColor: colors.greenAccent[700],
+                        backgroundColor: 'error.dark',
                       }
                     }}
                   >
                     Delete
-                  </Button>
+                  </Button>)
                   <Button
                     variant="contained"
                     onClick={() => navigate('/events')}
                     sx={{
-                      backgroundColor: colors.greenAccent[600],
-                      color: colors.grey[100],
-                      fontSize: "14px",
-                      fontWeight: "bold",
-                      padding: "10px 20px",
+                      backgroundColor: colors.greenAccent[500],
+                      color: 'white',
                       '&:hover': {
-                        backgroundColor: colors.greenAccent[700],
+                        backgroundColor: colors.greenAccent[600],
                       }
                     }}
                   >
                     Back to List
                   </Button>
-                </Box>
+                </ButtonGroup>
               </Grid>
             </Grid>
           </Paper>

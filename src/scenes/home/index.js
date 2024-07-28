@@ -1,10 +1,9 @@
 import './static/css/home.css'
-import Sidebar from "../global/Sidebar";
 import React, { useState } from 'react';
 import { useAccount } from '../../data/AccountProvider';
 
 const Home = () => {
-    const account = useAccount();
+    const {account} = useAccount();
     return (
         <div className="container">
             <section>

@@ -35,6 +35,10 @@ export const getAccountByEmail = async (email) => {
   return await fetchData(`/account?email=${email}`);
 }
 
+export const getAccountByAccountId = async (id) => {
+  return await fetchData(`/account/${id}`);
+}
+
 export const getEventDetail = async (id) => {
   return await fetchData(`/event/${id}/detail`);
 }

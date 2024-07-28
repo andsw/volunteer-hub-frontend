@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, useTheme, Tooltip, IconButton } from "@mui/material";
+import { Box, Typography, useTheme, Tooltip, IconButton, Fab } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import EditIcon from '@mui/icons-material/Edit';
@@ -8,6 +8,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import Header from "../../components/Header";
 import Sidebar from "../global/Sidebar";
 import Topbar from "../global/Topbar";
+import { Add } from "@mui/icons-material";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
 import BusinessOutlinedIcon from "@mui/icons-material/BusinessOutlined";
@@ -23,13 +24,14 @@ const Positions = () => {
   const [isSidebar, setIsSidebar] = useState(true);
   const [positions, setPositions] = useState([]);
   const {account, loadingAccount} = useAccount();
+  const isVolunteer = account?.accountType === 'volunteer'
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
     const getEvents = async () => {
       try {
-        const data = await fetchPositions(account.organizationId);
+        const data = await fetchPositions(account?.organizationId);
         setPositions(data);
       } catch (error) {
         console.error('Error fetching events:', error);
@@ -42,10 +44,6 @@ const Positions = () => {
     }
   }, [loadingAccount]);
 
-  if (loading) {
-    return <div>loading</div>;
-  }
-
   const handleEdit = (id) => {
     navigate(`/event-form/${id}`);
   };
@@ -56,6 +54,10 @@ const Positions = () => {
 
   const handleDelete = (id) => {
     console.log('Delete clicked for id:', id);
+  };
+
+  const handleAddEvent = () => {
+    navigate('/event-form');
   };
 
   const columns = [
@@ -120,7 +122,7 @@ const Positions = () => {
           >
             <PersonOutlinedIcon />
             <Typography color={colors.grey[100]} sx={{ ml: "5px" }}>
-              {recruitedNum} / {recruitmentNum}
+              {recruitedNum || 0} / {recruitmentNum}
             </Typography>
           </Box>
         );
@@ -135,21 +137,21 @@ const Positions = () => {
       align: 'center',
       renderCell: (params) => (
         <Box>
-          <Tooltip title="Edit">
+          {!isVolunteer && <Tooltip title="Edit">
             <IconButton onClick={() => handleEdit(params.row.id)} size="small">
               <EditIcon />
             </IconButton>
-          </Tooltip>
+          </Tooltip>}
           <Tooltip title="More info">
             <IconButton onClick={() => handleView(params.row.id)} size="small">
               <RemoveRedEyeIcon />
             </IconButton>
           </Tooltip>
-          <Tooltip title="Delete">
+          {!isVolunteer && <Tooltip title="Delete">
             <IconButton onClick={() => handleDelete(params.row.id)} size="small">
               <DeleteIcon />
             </IconButton>
-          </Tooltip>
+          </Tooltip>}
         </Box>
       ),
     }
@@ -200,6 +202,23 @@ const Positions = () => {
               components={{ Toolbar: GridToolbar }}
             />
           </Box>
+          {!isVolunteer && <Fab
+            color="primary"
+            aria-label="add"
+            sx={{
+              position: 'fixed',
+              bottom: 16,
+              right: 16,
+              backgroundColor: colors.blueAccent[700],
+              color: colors.grey[100],
+              '&:hover': {
+                backgroundColor: colors.blueAccent[400],
+              }
+            }}
+            onClick={handleAddEvent}
+          >
+            <Add />
+          </Fab>}
         </Box>
       </main>
     </div>

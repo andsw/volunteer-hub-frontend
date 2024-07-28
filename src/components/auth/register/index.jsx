@@ -48,6 +48,21 @@ const Register = () => {
 
     return (
         <>
+            <section>
+                <nav id="nav">
+                    <div className="nav-content">
+                        <div className="logo">
+                            <img src="../../assets/logo.jpg" alt="Logo Image" />
+                        </div>
+                        <div className="nav-links">
+                            <a href="/home">Home</a>
+                            <a href="/about">About Us</a>
+                            <a href="/contact">Contact Us</a>
+                            <a href="/login">Login</a>
+                        </div>
+                    </div>
+                </nav>
+            </section>
             {userLoggedIn && (<Navigate to={'/home'} replace={true} />)}
             <div className="main-container">
                 <div className="card">
