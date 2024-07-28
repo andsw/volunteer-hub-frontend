@@ -171,10 +171,10 @@ const Sidebar = () => {
               />
             }
             {
-              (userIsAdmin || userIsOrganization) &&
+              accountTypeIsNotEmpty &&
               <Item
-                title="Contacts Information"
-                to="/contacts"
+                title="chat"
+                to="/message"
                 icon={<ContactsOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
