@@ -1,16 +1,16 @@
-import { Box, IconButton, useTheme } from "@mui/material";
-import { useContext, useState } from "react";
+import React, {useContext } from 'react';
+import { useState } from 'react';
+import { Box, IconButton, useTheme, InputBase, Menu, MenuItem } from '@mui/material';
 import { ColorModeContext, tokens } from "../../theme";
-import InputBase from "@mui/material/InputBase";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
-import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import SearchIcon from "@mui/icons-material/Search";
-import { Menu, MenuItem } from "@mui/material";
 import { useNavigate } from 'react-router-dom';
-import { doSignOut } from "../../firebase/auth"
+import { doSignOut } from '../../firebase/auth';
+import NotificationIcon from '../../components/NotificationIcon';
+
 const Topbar = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -18,6 +18,7 @@ const Topbar = () => {
 
   const [anchorEl, setAnchorEl] = useState(null);
   const navigate = useNavigate();
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -67,9 +68,7 @@ const Topbar = () => {
             <DarkModeOutlinedIcon />
           )}
         </IconButton>
-        <IconButton>
-          <NotificationsOutlinedIcon />
-        </IconButton>
+        <NotificationIcon />
         <IconButton>
           <SettingsOutlinedIcon />
         </IconButton>

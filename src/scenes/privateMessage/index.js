@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { tokens } from "../../theme";
-import { db, ref, onValue, push, set } from '../../firebase/firebase'; // Import Firebase Realtime Database instance
+import {get, db, ref, onValue, push, set, update } from '../../firebase/firebase'; // Import Firebase Realtime Database instance
 import { TextField, Button, List, Paper, ListItem, useTheme, ListItemText, Box, Typography } from '@mui/material';
 import { useAccount } from '../../data/AccountProvider';
 import { useLocation } from 'react-router-dom';
@@ -19,14 +19,6 @@ const MessageBox = styled(Box)(({ theme, owner }) => ({
   textAlign: owner ? 'right' : 'left',
 }));
 
-const ContactList = styled(Box)(({ theme }) => ({
-  width: '30%',
-  maxHeight: '65vh',
-  overflowY: 'auto',
-  padding: theme.spacing(2),
-  borderRight: `1px solid ${theme.palette.divider}`,
-}));
-
 const PrivateMessage = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -40,7 +32,9 @@ const PrivateMessage = () => {
 
   const isVolunteer = account?.accountType === 'volunteer';
   const fromId = isVolunteer ? account?.volunteerId : account?.organizationId;
-  // const fromName = isVolunteer ? account.firstName : account.name;
+  const fromName = isVolunteer ? account?.firstName : account?.name;
+  const [unreadCount, setUnreadCount] = useState(0);
+
   useEffect(() => {
     setChatId([fromId, toId].sort().join('_'));
     const messageRef = ref(db, `chats/${chatId}`);
@@ -49,10 +43,52 @@ const PrivateMessage = () => {
       if (data) {
         const fetchedMessages = Object.values(data);
         setMessages(fetchedMessages);
+        
+        // Count unread messages
+        const unreadMessages = fetchedMessages.filter(
+          msg => msg.receiver === fromId && msg.status === 'unread'
+        );
+        setUnreadCount(unreadMessages.length);
       }
     });
     return () => unsubscribe();
-  }, [chatId, loadingAccount]);
+  }, [chatId, loadingAccount, fromId, fromName]);
+
+  const handleSendMessage = async () => {
+    if (newMessage.trim()) {
+      const messageRef = ref(db, `chats/${chatId}`);
+      const newMessageRef = push(messageRef);
+      await set(newMessageRef, {
+        text: newMessage,
+        sender: fromId,
+        senderName: fromName,
+        receiver: toId,
+        receiverName: toName,
+        timestamp: Date.now(),
+        status: 'unread'
+      });
+      setNewMessage('');
+    }
+  };
+
+  const markMessagesAsRead = async () => {
+    const messageRef = ref(db, `chats/${chatId}`);
+    const snapshot = await get(messageRef);
+    const data = snapshot.val();
+    if (data) {
+      const updates = {};
+      Object.entries(data).forEach(([key, message]) => {
+        if (message.receiver === fromId && message.status === 'unread') {
+          updates[`${key}/status`] = 'read';
+        }
+      });
+      await update(messageRef, updates);
+    }
+  };
+
+  useEffect(() => {
+    markMessagesAsRead();
+  }, [messages]);
 
   console.log(messages)
 
@@ -63,20 +99,20 @@ const PrivateMessage = () => {
     return <div>No message information available</div>;
   }
 
-  const handleSendMessage = async () => {
-    if (newMessage.trim()) {
-      const messageRef = ref(db, `chats/${chatId}`);
-      const newMessageRef = push(messageRef);
-      await set(newMessageRef, {
-        text: newMessage,
-        sender: fromId,
-        receiver: toId,
-        timestamp: Date.now(),
-        status: 'unread'
-      });
-      setNewMessage('');
-    }
-  };
+  // const handleSendMessage = async () => {
+  //   if (newMessage.trim()) {
+  //     const messageRef = ref(db, `chats/${chatId}`);
+  //     const newMessageRef = push(messageRef);
+  //     await set(newMessageRef, {
+  //       text: newMessage,
+  //       sender: fromId,
+  //       receiver: toId,
+  //       timestamp: Date.now(),
+  //       status: 'unread'
+  //     });
+  //     setNewMessage('');
+  //   }
+  // };
 
   return (
     <div className="app">
