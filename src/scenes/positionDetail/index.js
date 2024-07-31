@@ -21,12 +21,15 @@ import { getPositionDetail } from '../../data/api';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import MessageIcon from '@mui/icons-material/Message';
 import { useAccount } from '../../data/AccountProvider';
+import { saveApplication } from '../../data/api';
+import { useState } from 'react';
 
 const PositionDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const [errorMessage, setErrorMessage] = useState('')
   const [position, setPosition] = React.useState(null);
   const [loading, setLoading] = React.useState(true);
   const [isSidebar, setIsSidebar] = React.useState(true);
@@ -70,6 +73,35 @@ const PositionDetail = () => {
     navigate('/position');
   };
 
+  const handleApply = async () => {
+    await saveApplication({
+      positionId: position.id,
+      volunteerId: account.volunteerId
+    }).then(res => {
+      if (res.data.success) {
+        const subject = encodeURIComponent(`Application for ${position.name}`);
+        const body = encodeURIComponent(`Dear ${position.contactName},
+  
+      I am writing to apply for the position of ${position.name} at ${position.organization.name}.
+      
+      [Your application message here (or attach your resume)]
+      
+      Thank you for your consideration.
+      
+      Best regards,
+      ${account.firstName}`);
+
+        const mailtoLink = `mailto:${position.contactEmail}?subject=${subject}&body=${body}`;
+        window.location.href = mailtoLink;
+        setErrorMessage('');
+      } else {
+        setErrorMessage(res.data.message);
+      }
+    }).catch(e => {
+      console.error(e);
+    })
+  };
+
   return (
     <div className="app">
       <Sidebar isSidebar={isSidebar} />
@@ -77,6 +109,9 @@ const PositionDetail = () => {
         <Topbar setIsSidebar={setIsSidebar} />
         <Box m="20px">
           <Header title="Position Details" subtitle={position.name} />
+          {errorMessage && (
+            <span className='error-message'>{errorMessage}</span>
+          )}
           <Paper elevation={3} style={{ padding: '20px', backgroundColor: colors.background }}>
             <Grid container spacing={3}>
               <Grid item xs={12}>
@@ -150,21 +185,21 @@ const PositionDetail = () => {
               </Grid>
               <Grid item xs={12}>
                 <ButtonGroup>
-                  {isVolunteer && <Button
-                    variant="contained"
-                    onClick={() => {
-
-                    }}
-                    sx={{
-                      backgroundColor: colors.blueAccent[500],
-                      color: 'white',
-                      '&:hover': {
-                        backgroundColor: colors.blueAccent[600],
-                      }
-                    }}
-                  >
-                    apply
-                  </Button>}
+                  {isVolunteer && (
+                    <Button
+                      variant="contained"
+                      onClick={() => handleApply()}
+                      sx={{
+                        backgroundColor: colors.blueAccent[500],
+                        color: 'white',
+                        '&:hover': {
+                          backgroundColor: colors.blueAccent[600],
+                        }
+                      }}
+                    >
+                      Apply
+                    </Button>
+                  )}
                   {!isVolunteer && <Button
                     variant="contained"
                     onClick={handleEdit}

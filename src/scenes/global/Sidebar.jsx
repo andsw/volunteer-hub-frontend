@@ -181,6 +181,16 @@ const Sidebar = () => {
               />
             }
             {
+              accountTypeIsNotEmpty &&
+              <Item
+                title="applications"
+                to="/applications"
+                icon={<ContactsOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+            }
+            {
               (userIsAdmin || userIsOrganization) &&
               <Item
                 title="Invoices Balances"

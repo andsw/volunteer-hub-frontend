@@ -32,7 +32,7 @@ const ContactList = styled(Box)(({ theme }) => ({
 const ContactItem = styled(ListItem)(({ theme, active }) => ({
   borderRadius: theme.shape.borderRadius,
   marginBottom: theme.spacing(1),
-  backgroundColor: active ? theme.palette.action.selected : 'transparent',
+  backgroundColor: active === 'true' ? theme.palette.action.selected : 'transparent',
   '&:hover': {
     backgroundColor: theme.palette.action.hover,
   },
@@ -58,31 +58,6 @@ const PrivateMessage = () => {
   const [contacts, setContacts] = useState([]);
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   if (!fromId) return;
-
-  //   const chatsRef = ref(db, 'chats');
-  //   const unsubscribe = onValue(chatsRef, (snapshot) => {
-  //     const data = snapshot.val();
-  //     if (data) {
-  //       const contactsList = [];
-  //       Object.entries(data).forEach(([chatId, messages]) => {
-  //         const lastMessage = Object.values(messages).sort((a, b) => b.timestamp - a.timestamp)[0];
-  //         if (lastMessage.sender === fromId || lastMessage.receiver === fromId) {
-  //           contactsList.push({
-  //             id: lastMessage.sender === fromId ? lastMessage.receiver : lastMessage.sender,
-  //             name: lastMessage.sender === fromId ? lastMessage.receiverName : lastMessage.senderName,
-  //             lastMessage: lastMessage.text,
-  //             timestamp: lastMessage.timestamp,
-  //           });
-  //         }
-  //       });
-  //       setContacts(contactsList);
-  //     }
-  //   });
-
-  //   return () => unsubscribe();
-  // }, [fromId]);
   useEffect(() => {
     if (!fromId) return;
   
@@ -179,6 +154,7 @@ const PrivateMessage = () => {
         toName: contactName
       }
     });
+    window.location.reload();
   };
 
   return (
@@ -195,7 +171,7 @@ const PrivateMessage = () => {
                   key={contact.id} 
                   button 
                   onClick={() => handleContactClick(contact.id, contact.name)}
-                  active={activeContact === contact.id}
+                  active={activeContact === contact.id ? 'true': 'false'}
                 >
                   <Badge
                     color="error"

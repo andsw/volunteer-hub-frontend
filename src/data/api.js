@@ -8,6 +8,20 @@ export const fetchEvents = async (orgId) => {
   }
 };
 
+export const fetchApplications = async (accountId) => {
+  return await fetchData(`/application?accountId=${accountId}`)
+}
+
+export const updateApplicationStatus = async(id, newStatus) => {
+  return await axios.put(`${process.env.REACT_APP_SERVER_HOST}/application/${id}`, {
+    status: newStatus
+  });
+}
+
+export const saveApplication = async (application) => {
+  return await axios.post(`${process.env.REACT_APP_SERVER_HOST}/action/application/apply`, application);
+}
+
 export const fetchPositions = async (orgId) => {
   if (orgId) {
     return await fetchData(`/position?orgId=${orgId}`);

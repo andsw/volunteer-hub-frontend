@@ -35,7 +35,7 @@ const Events = () => {
   useEffect(() => {
     const getEvents = async () => {
       try {
-        const data = await fetchEvents(account.organizationId || orgId);
+        const data = await fetchEvents(account?.organizationId || orgId);
         setEvents(data);
       } catch (error) {
         console.error('Error fetching events:', error);

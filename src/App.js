@@ -21,6 +21,7 @@ import Home from "./scenes/home";
 import PrivateMessage from "./scenes/privateMessage";
 import About from "./scenes/about";
 import ContactUs from "./scenes/contactUs";
+import Applications from "./scenes/applications";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -50,6 +51,7 @@ function App() {
               <Route path="/calendar" element={<Calendar />} />
               <Route path="/about" element={<About />} />
               <Route path="/contact" element={<ContactUs/>}/>
+              <Route path="/applications" element={<Applications/>}/>
             </Routes>
           </AccountProvider>
         </AuthProvider>
