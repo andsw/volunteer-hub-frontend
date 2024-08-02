@@ -16,13 +16,14 @@ import BusinessIcon from '@mui/icons-material/Business';
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import WorkIcon from '@mui/icons-material/Work';
 import { format } from 'date-fns';
-import { ExpandLess } from '@mui/icons-material';
+import { AccountBalance, ExpandLess } from '@mui/icons-material';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import Collapse from '@mui/material/Collapse';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import { deleteEvent, deleteObject } from '../../data/api';
 
 import { getEventDetail } from '../../data/api';
+import { useAccount } from '../../data/AccountProvider';
 
 const EventDetail = () => {
   const theme = useTheme();
@@ -33,6 +34,9 @@ const EventDetail = () => {
   const [loading, setLoading] = React.useState(true);
   const [openReviews, setOpenReviews] = useState(false);
   const [reviews, setReviews] = useState({});
+  const { account, loadingAccount } = useAccount();
+  console.log(account);
+  const isOrganization = account && account.accountType === 'organization';
 
   const handleToggleReviews = () => {
     setOpenReviews(!openReviews);
@@ -53,11 +57,11 @@ const EventDetail = () => {
     };
 
     fetchEventDetail();
-  }, [id]);
+  }, [id, account]);
 
   const [isSidebar, setIsSidebar] = React.useState(true);
 
-  if (loading) {
+  if (loading || loadingAccount) {
     return <div>Loading...</div>;
   }
 
@@ -187,7 +191,7 @@ const EventDetail = () => {
               </Grid>
               <Grid item xs={12}>
                 <ButtonGroup>
-                  (isVolunteer && <Button
+                  {isOrganization && <Button
                     variant="contained"
                     onClick={() => navigate('/event-form', { state: { event } })}
                     sx={{
@@ -199,8 +203,8 @@ const EventDetail = () => {
                     }}
                   >
                     Edit
-                  </Button>)
-                  (isVolunteer && <Button
+                  </Button>}
+                  {isOrganization && <Button
                     variant="contained"
                     onClick={async () => {
                       await deleteEvent(event.id)
@@ -215,7 +219,7 @@ const EventDetail = () => {
                     }}
                   >
                     Delete
-                  </Button>)
+                  </Button>}
                   <Button
                     variant="contained"
                     onClick={() => navigate('/events')}

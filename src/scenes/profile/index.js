@@ -65,22 +65,22 @@ const Profile = () => {
   const { id } = useParams();
 
   useEffect(() => {
+    const fetchAccountData = async (accountId) => {
+      try {
+        const accountData = await getAccountByAccountId(accountId);
+        setProfile(accountData);
+      } catch (err) {
+        console.error(err);
+      }
+    };
     if (id) {
-      const fetchAccountData = async () => {
-        try {
-          const accountData = await getAccountByAccountId(id);
-          setProfile(accountData);
-        } catch (err) {
-          console.error(err);
-        }
-      };
-      fetchAccountData();
+      fetchAccountData(id);
     } else {
-      if (!loadingAccount) {
-        setProfile(account);
+      if (account && !loadingAccount) {
+        fetchAccountData(account.id);
       }
     }
-  }, [id, loadingAccount, profile]);
+  }, [id, loadingAccount]);
 
   if (loadingAccount) {
     return <Typography>Loading account...</Typography>;

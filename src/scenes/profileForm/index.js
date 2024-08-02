@@ -65,6 +65,7 @@ const ProfileForm = () => {
     if (res.data.success) {
       setSubmitting(false);
       setAccount(values)
+      window.loacation.reload();
       navigate('/profile')
       setErrorMessage('')
     } else {

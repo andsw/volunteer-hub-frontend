@@ -35,8 +35,16 @@ const Events = () => {
   useEffect(() => {
     const getEvents = async () => {
       try {
-        const data = await fetchEvents(account?.organizationId || orgId);
-        setEvents(data);
+        if (account && account.accountType === 'organization') {
+          const data = await fetchEvents(account.organizationId);
+          setEvents(data);
+        } else if (orgId) {
+          const data = await fetchEvents(orgId);
+          setEvents(data);
+        } else if (account && account.accountType == 'volunteer') {
+          const data = await fetchEvents();
+          setEvents(data);
+        }
       } catch (error) {
         console.error('Error fetching events:', error);
       } finally {
@@ -46,7 +54,7 @@ const Events = () => {
     if (!loadingAccount) {
       getEvents();
     }
-  }, [loadingAccount]);
+  }, [loadingAccount, account, orgId]);
 
   const handleEdit = async (id) => {
     const event = await getEventDetail(parseInt(id));

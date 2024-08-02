@@ -33,8 +33,9 @@ const PositionDetail = () => {
   const [position, setPosition] = React.useState(null);
   const [loading, setLoading] = React.useState(true);
   const [isSidebar, setIsSidebar] = React.useState(true);
-  const { account } = useAccount();
+  const { account, loadingAccount } = useAccount();
   const isVolunteer = account && account.accountType === 'volunteer'
+  const isOrganization = account && account.accountType === 'organization'
 
   React.useEffect(() => {
     const fetchPositionDetail = async () => {
@@ -49,9 +50,9 @@ const PositionDetail = () => {
     };
 
     fetchPositionDetail();
-  }, [id]);
+  }, [id, account]);
 
-  if (loading) {
+  if (loading || loadingAccount) {
     return <div>Loading...</div>;
   }
 
@@ -200,7 +201,7 @@ const PositionDetail = () => {
                       Apply
                     </Button>
                   )}
-                  {!isVolunteer && <Button
+                  {isOrganization && <Button
                     variant="contained"
                     onClick={handleEdit}
                     sx={{
@@ -213,7 +214,7 @@ const PositionDetail = () => {
                   >
                     Edit
                   </Button>}
-                  {!isVolunteer && <Button
+                  {isOrganization && <Button
                     variant="contained"
                     onClick={()=>handleDelete(position.id)}
                     sx={{

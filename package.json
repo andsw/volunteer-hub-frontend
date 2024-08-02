@@ -1,12 +1,15 @@
 {
+  "homepage": "http://andsw.github.io/volunteer-hub-frontend",
   "name": "react-admin",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "start": "npm run prod",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "dev": "react-scripts start",
     "prod": "env-cmd -f .env.production react-scripts start",
-    "build": "react-scripts build --no-css-minimize",
+    "build": "env-cmd -f .env.production react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -63,6 +66,7 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
-    "env-cmd": "^10.1.0"
+    "env-cmd": "^10.1.0",
+    "gh-pages": "^6.1.1"
   }
 }
