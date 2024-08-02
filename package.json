@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "start": "npm run prod",
     "dev": "react-scripts start",
     "prod": "env-cmd -f .env.production react-scripts start",
     "build": "react-scripts build --no-css-minimize",
