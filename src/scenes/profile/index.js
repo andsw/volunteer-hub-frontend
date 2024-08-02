@@ -62,7 +62,7 @@ const Profile = () => {
   const navigate = useNavigate();
   const [profile, setProfile] = useState({});
   const { account, loadingAccount } = useAccount();
-  const {id} = useParams();
+  const { id } = useParams();
 
   useEffect(() => {
     if (id) {
@@ -76,18 +76,19 @@ const Profile = () => {
       };
       fetchAccountData();
     } else {
-      setProfile(account);
+      if (!loadingAccount) {
+        setProfile(account);
+      }
     }
-  }, [id, loadingAccount]);
+  }, [id, loadingAccount, profile]);
 
   if (loadingAccount) {
     return <Typography>Loading account...</Typography>;
   }
-  
+
   if (id && !profile?.email) {
     return <Typography>Account profile not found</Typography>;
   }
-
   const isVolunteer = account?.accountType === 'volunteer';
 
   const renderCommonInfo = () => (

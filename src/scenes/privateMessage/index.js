@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { tokens } from "../../theme";
 import { get, db, ref, onValue, push, set, update } from '../../firebase/firebase'; // Import Firebase Realtime Database instance
 import { TextField, Button, Avatar, Badge, List, Paper, ListItem, useTheme, ListItemText, Box, Typography } from '@mui/material';
@@ -87,7 +87,7 @@ const PrivateMessage = () => {
   
     return () => unsubscribe();
   }, [fromId]);
-
+  
   useEffect(() => {
     setChatId((isVolunteer ? [fromId, toId] : [toId, fromId]).sort().join('_'));
     const messageRef = ref(db, `chats/${chatId}`);
@@ -106,6 +106,14 @@ const PrivateMessage = () => {
     });
     return () => unsubscribe();
   }, [chatId, loadingAccount, fromId, fromName]);
+
+  // scroll the page to the bottom to display the newest message
+  const endOfMessagesRef = useRef(null);
+  useEffect(() => {
+    if (endOfMessagesRef.current) {
+      endOfMessagesRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages]);
 
   const handleSendMessage = async () => {
     if (newMessage.trim()) {
@@ -142,10 +150,6 @@ const PrivateMessage = () => {
   useEffect(() => {
     markMessagesAsRead();
   }, [messages]);
-
-  if (loadingAccount) {
-    return <div>loading account</div>
-  }
 
   const handleContactClick = (contactId, contactName) => {
     navigate('/message', {
@@ -245,6 +249,7 @@ const PrivateMessage = () => {
                           </>
                         }
                       />
+                      <div ref={endOfMessagesRef} />
                     </MessageBox>
                   </ListItem>
                 )}

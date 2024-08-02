@@ -25,7 +25,6 @@ const Applications = () => {
   const { account, loadingAccount } = useAccount();
   const isOrganization = account?.accountType === 'organization';
   const isVolunteer = account?.accountType === 'volunteer';
-  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   const [declineDialogOpen, setDeclineDialogOpen] = useState(false);
@@ -40,8 +39,6 @@ const Applications = () => {
         setApplications(data);
       } catch (error) {
         console.error('Error fetching applications:', error);
-      } finally {
-        setLoading(false);
       }
     };
     if (!loadingAccount) {
@@ -71,10 +68,6 @@ const Applications = () => {
     }
   };
 
-  if (loadingAccount || loading) {
-    return <div>loading</div>
-  }
-
   const handleStatusChange = async (id, newStatus) => {
     try {
       if (newStatus !== 'declined') {
@@ -95,7 +88,7 @@ const Applications = () => {
 
   const handleDeclineConfirm = async () => {
     try {
-      await updateApplicationStatus(declineApplicationId, 'declined');
+      await updateApplicationStatus(declineApplicationId, 'declined', declineReason);
       const updatedData = await fetchApplications(account?.id);
       setApplications(updatedData);
     } catch (error) {

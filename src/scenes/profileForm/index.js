@@ -26,7 +26,8 @@ const ProfileForm = () => {
   const [isSidebar, setIsSidebar] = useState(true);
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const authInfo = useAuth();
-  const {setAccount} = useAccount();
+  const [errorMessage, setErrorMessage] = useState('')
+  const { setAccount } = useAccount();
   const location = useLocation(); // Use this to get location state
   const { profile } = location.state || {}; // Extract profile from location state
   // Set initial form values based on profile
@@ -57,10 +58,18 @@ const ProfileForm = () => {
 
   const handleFormSubmit = async (values, { setSubmitting }) => {
     values.avatarImgUrl = authInfo.currentUser.photoURL;
-    await saveProfile(values);
-    setSubmitting(false);
-    setAccount(values)
-    navigate('/profile')
+    console.log(values);
+    const res = await saveProfile(values);
+    console.log(res.data);
+    console.log(res.data.success)
+    if (res.data.success) {
+      setSubmitting(false);
+      setAccount(values)
+      navigate('/profile')
+      setErrorMessage('')
+    } else {
+      setErrorMessage(res.data.message);
+    }
   };
 
   const handleAccountTypeChange = (event, setFieldValue) => {
@@ -70,7 +79,7 @@ const ProfileForm = () => {
     if (value === 'volunteer') {
       setFieldValue('name', '');
       setFieldValue('logoUrl', '');
-      setFieldValue('official_site_link', '');
+      setFieldValue('officialSiteLink', '');
       setFieldValue('dob', '');
       setFieldValue('sex', '');
       setFieldValue('nationality', '');
@@ -105,6 +114,9 @@ const ProfileForm = () => {
             title="Profile"
             subtitle="Detailed Account Information"
           />
+          {errorMessage && (
+            <span className='error-message'>{errorMessage}</span>
+          )}
           {
             !profile &&
             <Typography color={colors.greenAccent[400]} sx={{ mb: 2, fontSize: 25, fontWeight: 'bolder' }}>
@@ -333,7 +345,7 @@ const ProfileForm = () => {
                         onBlur={handleBlur}
                         onChange={handleChange}
                         value={values.name}
-                        name="address"
+                        name="name"
                         error={!!touched.name && !!errors.name}
                         helperText={touched.name && errors.name}
                         sx={{ gridColumn: "span 2" }}
@@ -346,7 +358,7 @@ const ProfileForm = () => {
                         onBlur={handleBlur}
                         onChange={handleChange}
                         value={values.officialSiteLink}
-                        name="official_site_link"
+                        name="officialSiteLink"
                         error={!!touched.officialSiteLink && !!errors.officialSiteLink}
                         helperText={touched.officialSiteLink && errors.officialSiteLink}
                         sx={{ gridColumn: "span 2" }}

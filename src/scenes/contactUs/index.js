@@ -1,9 +1,9 @@
 import '../home/static/css/home.css'
 import React from 'react';
-import { useAccount } from '../../data/AccountProvider';
+import { useAuth } from '../../firebase/authContext';
 
 const ContactUs = () => {
-    const { account } = useAccount();
+    const { userLoggedIn } = useAuth()
     return (
         <div className="container">
             <section>
@@ -17,9 +17,9 @@ const ContactUs = () => {
                             <a href="/about">About Us</a>
                             <a href="/contact">Contact Us</a>
                             {
-                                account == null
-                                    ? <a href="/login">Login</a>
-                                    : <a href="/events">User Center</a>
+                                userLoggedIn
+                                    ? <a href="/events">User Center</a>
+                                    : <a href="/login">Login</a>
                             }
                         </div>
                     </div>

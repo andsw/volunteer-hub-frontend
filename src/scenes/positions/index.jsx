@@ -13,7 +13,7 @@ import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
 import BusinessOutlinedIcon from "@mui/icons-material/BusinessOutlined";
 import { useAccount } from '../../data/AccountProvider';
-import { fetchPositions } from '../../data/api';
+import { deletePosition, fetchPositions } from '../../data/api';
 import { Link, useNavigate } from 'react-router-dom';
 import SettingsIcon from '@mui/icons-material/Settings';
 
@@ -29,7 +29,7 @@ const Positions = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const getEvents = async () => {
+    const getPositions = async () => {
       try {
         const data = await fetchPositions(account?.organizationId);
         setPositions(data);
@@ -40,24 +40,25 @@ const Positions = () => {
       }
     };
     if (!loadingAccount) {
-      getEvents();
+      getPositions();
     }
   }, [loadingAccount]);
 
   const handleEdit = (id) => {
-    navigate(`/event-form/${id}`);
+    navigate(`/position-form/${id}`);
   };
 
   const handleView = (id) => {
     navigate(`/position-detail/${id}`);
   };
 
-  const handleDelete = (id) => {
-    console.log('Delete clicked for id:', id);
+  const handleDelete = async (id) => {
+    await deletePosition(id);
+    window.location.reload();
   };
 
-  const handleAddEvent = () => {
-    navigate('/event-form');
+  const handleAddPosition = () => {
+    navigate('/position-form');
   };
 
   const columns = [
@@ -215,7 +216,7 @@ const Positions = () => {
                 backgroundColor: colors.blueAccent[400],
               }
             }}
-            onClick={handleAddEvent}
+            onClick={handleAddPosition}
           >
             <Add />
           </Fab>}

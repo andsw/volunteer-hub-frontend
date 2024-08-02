@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useEffect } from "react";
 import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import { Link } from "react-router-dom";
@@ -7,7 +8,6 @@ import { tokens } from "../../theme";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
 import ContactsOutlinedIcon from "@mui/icons-material/ContactsOutlined";
-import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
@@ -16,6 +16,7 @@ import VolunteerActivismIcon from '@mui/icons-material/VolunteerActivism';
 import { useAuth } from "../../firebase/authContext";
 import { useAccount } from "../../data/AccountProvider";
 import useAuthRedirect from "../../firebase/useAuthRedirect";
+import MoveToInboxIcon from '@mui/icons-material/MoveToInbox';
 import { useNavigate, useLocation } from "react-router-dom";
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
@@ -47,17 +48,18 @@ const Sidebar = () => {
   const currentUser = useAuth();
   const { account, loadingAccount } = useAccount();
   const accountTypeIsNotEmpty = account?.accountType != null;
-  const userIsAdmin = account?.accountType === 'admin';
   const userIsOrganization = account?.accountType === 'organization';
   const userIsVolunteer = account?.accountType === 'volunteer';
   const navigate = useNavigate()
   const location = useLocation();
   const currentPath = location.pathname;
+  useEffect(() => {
+    if (!loadingAccount && currentPath !== '/profile-form' && !accountTypeIsNotEmpty) {
+      navigate('/profile-form');
+    }
+  }, [loadingAccount, accountTypeIsNotEmpty, currentPath, navigate]);
   if (loadingAccount) {
     <div>loading...</div>
-  }
-  if (!loadingAccount && currentPath !== '/profile-form' && !accountTypeIsNotEmpty) {
-    navigate('/profile-form')
   }
   return (
     <Box
@@ -125,10 +127,13 @@ const Sidebar = () => {
                   fontWeight="bold"
                   sx={{ m: "10px 0 0 0" }}
                 >
-                  {currentUser.currentUser && currentUser.currentUser.displayName}
+                  {
+                    (userIsOrganization && account?.name) || (userIsVolunteer && account?.firstName)
+                    || (currentUser.currentUser && currentUser.currentUser.displayName)
+                  }
                 </Typography>
                 <Typography variant="h5" color={colors.greenAccent[500]}>
-                  VP Fancy Admin
+                  {currentUser.currentUser.email}
                 </Typography>
               </Box>
             </Box>
@@ -152,7 +157,7 @@ const Sidebar = () => {
                 Data
               </Typography>
             }
-            {
+            {accountTypeIsNotEmpty &&
               <Item
                 title="Events"
                 to="/events"
@@ -162,10 +167,20 @@ const Sidebar = () => {
               />
             }
             {
-              <Item
+              accountTypeIsNotEmpty && <Item
                 title="Positions"
-                to="/position"
+                to="/positions"
                 icon={<PeopleOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+            }
+            {
+              accountTypeIsNotEmpty &&
+              <Item
+                title="applications"
+                to="/applications"
+                icon={<MoveToInboxIcon />}
                 selected={selected}
                 setSelected={setSelected}
               />
@@ -180,17 +195,7 @@ const Sidebar = () => {
                 setSelected={setSelected}
               />
             }
-            {
-              accountTypeIsNotEmpty &&
-              <Item
-                title="applications"
-                to="/applications"
-                icon={<ContactsOutlinedIcon />}
-                selected={selected}
-                setSelected={setSelected}
-              />
-            }
-            {
+            {/* {
               (userIsAdmin || userIsOrganization) &&
               <Item
                 title="Invoices Balances"
@@ -199,7 +204,7 @@ const Sidebar = () => {
                 selected={selected}
                 setSelected={setSelected}
               />
-            }
+            } */}
             <Typography
               variant="h6"
               color={colors.grey[300]}
@@ -208,7 +213,6 @@ const Sidebar = () => {
               Pages
             </Typography>
             {
-              accountTypeIsNotEmpty &&
               <Item
                 title="Profile"
                 to="/profile"

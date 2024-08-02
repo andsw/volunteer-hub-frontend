@@ -20,7 +20,7 @@ import { ExpandLess } from '@mui/icons-material';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import Collapse from '@mui/material/Collapse';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
-import { deleteObject } from '../../data/api';
+import { deleteEvent, deleteObject } from '../../data/api';
 
 import { getEventDetail } from '../../data/api';
 
@@ -203,7 +203,8 @@ const EventDetail = () => {
                   (isVolunteer && <Button
                     variant="contained"
                     onClick={async () => {
-                      await deleteObject('event', event.id)
+                      await deleteEvent(event.id)
+                      navigate('/events')
                     }}
                     sx={{
                       backgroundColor: 'error.main',

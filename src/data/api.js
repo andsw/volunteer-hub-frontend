@@ -12,14 +12,23 @@ export const fetchApplications = async (accountId) => {
   return await fetchData(`/application?accountId=${accountId}`)
 }
 
-export const updateApplicationStatus = async(id, newStatus) => {
+export const updateApplicationStatus = async(id, newStatus, declinedMsg='') => {
   return await axios.put(`${process.env.REACT_APP_SERVER_HOST}/application/${id}`, {
-    status: newStatus
+    status: newStatus,
+    declinedMsg
   });
 }
 
+export const deleteEvent = async (id) => {
+  return await axios.delete(`${process.env.REACT_APP_SERVER_HOST}/event/${id}`);
+}
+
+export const deletePosition = async (id) => {
+  return await axios.delete(`${process.env.REACT_APP_SERVER_HOST}/position/${id}`);
+}
+
 export const saveApplication = async (application) => {
-  return await axios.post(`${process.env.REACT_APP_SERVER_HOST}/action/application/apply`, application);
+  return await axios.post(`${process.env.REACT_APP_SERVER_HOST}/application/apply`, application);
 }
 
 export const fetchPositions = async (orgId) => {
@@ -34,15 +43,16 @@ export const getPositionDetail = async (id) => {
   return await fetchData(`/position/${id}/detail`);
 }
 
+export const savePosition = async (position) => {
+  return await axios.post(`${process.env.REACT_APP_SERVER_HOST}/position`, position);
+}
+
 export const saveProfile = async (account) => {
   return await axios.post(`${process.env.REACT_APP_SERVER_HOST}/account`, account);
 }
 
 export const saveEvent = async (event) => {
-  return await axios.post(`${process.env.REACT_APP_SERVER_HOST}/event`, event, {
-    headers: {
-      'Content-Type': 'application/json'
-    }});
+  return await axios.post(`${process.env.REACT_APP_SERVER_HOST}/event`, event);
 }
 
 export const getAccountByEmail = async (email) => {

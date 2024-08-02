@@ -20,7 +20,7 @@ import { useNavigate } from "react-router-dom";
 import { Add } from "@mui/icons-material";
 import { useAccount } from "../../data/AccountProvider";
 import { useParams } from "react-router-dom";
-import { getEventDetail } from "../../data/api";
+import { getEventDetail, deleteEvent } from "../../data/api";
 
 const Events = () => {
   const theme = useTheme();
@@ -57,8 +57,9 @@ const Events = () => {
     navigate(`/event-detail/${id}`);
   };
 
-  const handleDelete = (id) => {
-    console.log('Delete clicked for id:', id);
+  const handleDelete = async (id) => {
+    await deleteEvent(id);
+    window.location.reload();
   };
 
   const handleAddEvent = () => {

@@ -17,7 +17,7 @@ import EmailIcon from '@mui/icons-material/Email';
 import { useTheme } from '@mui/material/styles';
 import Topbar from "../global/Topbar";
 import Sidebar from "../global/Sidebar";
-import { getPositionDetail } from '../../data/api';
+import { deletePosition, getPositionDetail } from '../../data/api';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import MessageIcon from '@mui/icons-material/Message';
 import { useAccount } from '../../data/AccountProvider';
@@ -63,14 +63,13 @@ const PositionDetail = () => {
     navigate(`/position-form`, { state: { position } });
   };
 
-  const handleDelete = () => {
-    // Implement delete logic
-    alert('Position deleted');
-    navigate('/position');
+  const handleDelete = async (id) => {
+    await deletePosition(id)
+    navigate('/positions');
   };
 
   const handleBackToList = () => {
-    navigate('/position');
+    navigate('/positions');
   };
 
   const handleApply = async () => {
@@ -94,6 +93,7 @@ const PositionDetail = () => {
         const mailtoLink = `mailto:${position.contactEmail}?subject=${subject}&body=${body}`;
         window.location.href = mailtoLink;
         setErrorMessage('');
+        navigate('/applications')
       } else {
         setErrorMessage(res.data.message);
       }
@@ -215,7 +215,7 @@ const PositionDetail = () => {
                   </Button>}
                   {!isVolunteer && <Button
                     variant="contained"
-                    onClick={handleDelete}
+                    onClick={()=>handleDelete(position.id)}
                     sx={{
                       backgroundColor: 'error.main',
                       color: 'white',
