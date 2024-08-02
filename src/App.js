@@ -1,7 +1,5 @@
 import { Routes, Route } from "react-router-dom";
 import Positions from "./scenes/positions";
-import Invoices from "./scenes/invoices";
-import Contacts from "./scenes/contacts";
 import FAQ from "./scenes/faq";
 import ProfileForm from "./scenes/profileForm";
 import Events from "./scenes/events";
@@ -42,8 +40,6 @@ function App() {
               <Route path="/positions" element={<Positions />} />
               <Route path="/position-detail/:id" element={<PositionDetail />} />
               <Route path="/position-form" element={<PositionForm />} />
-              <Route path="/contacts" element={<Contacts />} />
-              <Route path="/invoices" element={<Invoices />} />
               <Route path="/profile/:id?" element={<Profile />} />
               <Route path="/profile-form" element={<ProfileForm />} />
               <Route path="/message" element={<PrivateMessage />} />

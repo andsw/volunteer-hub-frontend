@@ -8,6 +8,10 @@ export const fetchEvents = async (orgId) => {
   }
 };
 
+export const fetchJoinedEvents = async(volunteerId) => {
+  return await fetchData(`/event/joined?volunteerId=${volunteerId}`);
+}
+
 export const fetchApplications = async (accountId) => {
   return await fetchData(`/application?accountId=${accountId}`)
 }

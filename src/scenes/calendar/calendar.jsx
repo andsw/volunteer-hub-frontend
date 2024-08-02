@@ -1,11 +1,14 @@
-import { useState } from "react";
-import FullCalendar, { formatDate } from "@fullcalendar/react";
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import listPlugin from "@fullcalendar/list";
 import Topbar from "../global/Topbar";
 import Sidebar from "../global/Sidebar";
+import './style.css'
 import {
   Box,
   List,
@@ -16,37 +19,80 @@ import {
 } from "@mui/material";
 import Header from "../../components/Header";
 import { tokens } from "../../theme";
+import { useAccount } from '../../data/AccountProvider';
+import { fetchJoinedEvents } from '../../data/api';
+import { fetchEvents } from '../../data/api';
 
 const Calendar = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const [currentEvents, setCurrentEvents] = useState([]);
-
+  const [events, setEvents] = useState([]);
   const [isSidebar, setIsSidebar] = useState(true);
-  const handleDateClick = (selected) => {
-    const title = prompt("Please enter a new title for your event");
-    const calendarApi = selected.view.calendar;
-    calendarApi.unselect();
+  const { account, loadingAccount } = useAccount();
+  const navigate = useNavigate();
 
-    if (title) {
-      calendarApi.addEvent({
-        id: `${selected.dateStr}-${title}`,
-        title,
-        start: selected.startStr,
-        end: selected.endStr,
-        allDay: selected.allDay,
-      });
-    }
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      let data;
+      try {
+        if (account?.accountType === 'volunteer') {
+          data = (await fetchJoinedEvents(account.volunteerId)).map(event => ({
+            id: event.id,
+            title: event.title,
+            start: event.eventStartTime,
+            end: event.eventEndTime,
+            extendedProps: {
+              subtitle: event.subtitle,
+              requiredSkillTags: event.requiredSkillTags,
+              organizationId: event.organizationId,
+              organizationName: event.organizationName,
+              venue: event.venue,
+              lastEditTime: event.lastEditTime,
+              createTime: event.createTime,
+              likesNum: event.likesNum,
+              collectionsNum: event.collectionsNum,
+              reviewsNum: event.reviewsNum,
+              joinedVolunteerNum: event.joinedVolunteerNum
+            }
+          }));
+        } else if (account?.accountType === 'organization') {
+          data = (await fetchEvents(account.organizationId)).map(event => ({
+            id: event.id,
+            title: event.title,
+            start: event.eventStartTime,
+            end: event.eventEndTime,
+            extendedProps: {
+              subtitle: event.subtitle,
+              requiredSkillTags: event.requiredSkillTags,
+              organizationId: event.organizationId,
+              organizationName: event.organizationName,
+              venue: event.venue,
+              lastEditTime: event.lastEditTime,
+              createTime: event.createTime,
+              likesNum: event.likesNum,
+              collectionsNum: event.collectionsNum,
+              reviewsNum: event.reviewsNum,
+              joinedVolunteerNum: event.joinedVolunteerNum
+            }
+          }));
+        }
+      } catch (error) {
+        console.error("Error fetching events:", error);
+      }
+      setEvents(data);
+    };
 
-  const handleEventClick = (selected) => {
-    if (
-      window.confirm(
-        `Are you sure you want to delete the event '${selected.event.title}'`
-      )
-    ) {
-      selected.event.remove();
+    if (!loadingAccount) {
+      fetchData();
     }
+  }, [account, loadingAccount]);
+
+  if (loadingAccount) {
+    return <div>loading</div>
+  }
+
+  const handleEventClick = (clickInfo) => {
+    navigate(`/event-detail/${clickInfo.event.id}`, { state: { eventDetails: clickInfo.event.extendedProps } });
   };
 
   return (
@@ -64,9 +110,9 @@ const Calendar = () => {
               p="15px"
               borderRadius="4px"
             >
-              <Typography variant="h5">Events</Typography>
+              <Typography variant="h5">Upcoming Events</Typography>
               <List>
-                {currentEvents.map((event) => (
+                {events?.slice(0, 5).map((event) => (
                   <ListItem
                     key={event.id}
                     sx={{
@@ -79,11 +125,7 @@ const Calendar = () => {
                       primary={event.title}
                       secondary={
                         <Typography>
-                          {formatDate(event.start, {
-                            year: "numeric",
-                            month: "short",
-                            day: "numeric",
-                          })}
+                          {new Date(event.start).toLocaleDateString()}
                         </Typography>
                       }
                     />
@@ -108,25 +150,13 @@ const Calendar = () => {
                   right: "dayGridMonth,timeGridWeek,timeGridDay,listMonth",
                 }}
                 initialView="dayGridMonth"
-                editable={true}
-                selectable={true}
+                editable={false}
+                selectable={false}
                 selectMirror={true}
                 dayMaxEvents={true}
-                select={handleDateClick}
                 eventClick={handleEventClick}
-                eventsSet={(events) => setCurrentEvents(events)}
-                initialEvents={[
-                  {
-                    id: "12315",
-                    title: "All-day event",
-                    date: "2022-09-14",
-                  },
-                  {
-                    id: "5123",
-                    title: "Timed event",
-                    date: "2022-09-28",
-                  },
-                ]}
+                events={events}
+                eventClassNames="pointer" 
               />
             </Box>
           </Box>
